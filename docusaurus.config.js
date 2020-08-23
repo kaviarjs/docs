@@ -1,19 +1,22 @@
 module.exports = {
   title: "KaviarJS",
-  tagline: "Next-gen web development framework.",
+  tagline: "For the classy and the bold.",
   url: "https://kaviarjs.com",
   baseUrl: "/",
   favicon: "img/favicon.ico",
   organizationName: "facebook", // Usually your GitHub org/user name.
-  projectName: "KAVIAR", // Usually your repo name.
+  projectName: "KAVIARJS", // Usually your repo name.
   themeConfig: {
+    colorMode: {
+      disableSwitch: true,
+    },
     navbar: {
-      title: "My Site",
+      title: "",
       logo: {
-        alt: "My Site Logo",
-        src: "img/logo.svg",
+        alt: "KaviarJs",
+        src: "img/logo.png",
       },
-      links: [
+      items: [
         {
           to: "docs/",
           activeBasePath: "docs",
@@ -22,7 +25,7 @@ module.exports = {
         },
         { to: "blog", label: "Blog", position: "left" },
         {
-          href: "https://github.com/facebook/docusaurus",
+          href: "https://github.com/kaviarjs/docs",
           label: "GitHub",
           position: "right",
         },
@@ -66,12 +69,12 @@ module.exports = {
             },
             {
               label: "GitHub",
-              href: "https://github.com/facebook/docusaurus",
+              href: "https://github.com/kaviarjs/docs",
             },
           ],
         },
       ],
-      copyright: `Copyright © ${new Date().getFullYear()} My Project, Inc. Built with Docusaurus.`,
+      copyright: `Copyright © ${new Date().getFullYear()} Theodor Diaconu.`,
     },
   },
   presets: [
@@ -88,11 +91,13 @@ module.exports = {
         },
         blog: {
           showReadingTime: true,
+
           // Please change this to your repo.
           editUrl:
             "https://github.com/facebook/docusaurus/edit/master/website/blog/",
         },
         theme: {
+          disableSwitch: true,
           customCss: require.resolve("./src/css/custom.css"),
         },
       },

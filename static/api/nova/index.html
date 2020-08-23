@@ -1,0 +1,358 @@
+<!doctype html>
+<html class="default no-js">
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>@kaviar/grapher</title>
+	<meta name="description" content="">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="assets/css/main.css">
+</head>
+<body>
+<header>
+	<div class="tsd-page-toolbar">
+		<div class="container">
+			<div class="table-wrap">
+				<div class="table-cell" id="tsd-search" data-index="assets/js/search.js" data-base=".">
+					<div class="field">
+						<label for="tsd-search-field" class="tsd-widget search no-caption">Search</label>
+						<input id="tsd-search-field" type="text" />
+					</div>
+					<ul class="results">
+						<li class="state loading">Preparing search index...</li>
+						<li class="state failure">The search index is not available</li>
+					</ul>
+					<a href="index.html" class="title">@kaviar/grapher</a>
+				</div>
+				<div class="table-cell" id="tsd-widgets">
+					<div id="tsd-filter">
+						<a href="#" class="tsd-widget options no-caption" data-toggle="options">Options</a>
+						<div class="tsd-filter-group">
+							<div class="tsd-select" id="tsd-filter-visibility">
+								<span class="tsd-select-label">All</span>
+								<ul class="tsd-select-list">
+									<li data-value="public">Public</li>
+									<li data-value="protected">Public/Protected</li>
+									<li data-value="private" class="selected">All</li>
+								</ul>
+							</div>
+							<input type="checkbox" id="tsd-filter-inherited" checked />
+							<label class="tsd-widget" for="tsd-filter-inherited">Inherited</label>
+							<input type="checkbox" id="tsd-filter-externals" checked />
+							<label class="tsd-widget" for="tsd-filter-externals">Externals</label>
+							<input type="checkbox" id="tsd-filter-only-exported" />
+							<label class="tsd-widget" for="tsd-filter-only-exported">Only exported</label>
+						</div>
+					</div>
+					<a href="#" class="tsd-widget menu no-caption" data-toggle="menu">Menu</a>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="tsd-page-title">
+		<div class="container">
+			<ul class="tsd-breadcrumb">
+				<li>
+					<a href="globals.html">Globals</a>
+				</li>
+			</ul>
+			<h1> @kaviar/grapher</h1>
+		</div>
+	</div>
+</header>
+<div class="container container-main">
+	<div class="row">
+		<div class="col-8 col-content">
+			<div class="tsd-panel tsd-typography">
+				<a href="#grapher" id="grapher" style="color: inherit; text-decoration: none;">
+					<h1>Grapher</h1>
+				</a>
+				<p><a href="https://travis-ci.org/kaviarjs/grapher"><img src="https://api.travis-ci.org/kaviarjs/db.svg?branch=master" alt="Build Status"></a></p>
+				<p><a href="https://github.com/ellerbrock/typescript-badges/"><img src="https://badges.frapsoft.com/typescript/version/typescript-next.svg?v=101" alt="TypeScript"></a></p>
+				<p><em>Grapher</em> is the fetching layer on top of MongoDB Node Driver, to allow extreme speeds for relational data surpassing SQL in some conditions.</p>
+				<p>Grapher is designed to work very well with your GraphQL resolvers ensuring you will query the database a minimum amount of time.</p>
+				<p>The incredible speed boost is possible due to the technology called <code>Hypernova</code>, created by <a href="https://www.linkedin.com/in/dtheodor/">Theodor Diaconu</a> in 2016 for Meteor. Read more about the <a href="./docs/hypernova.md">Hypernova</a>.</p>
+				<a href="#installation" id="installation" style="color: inherit; text-decoration: none;">
+					<h2>Installation</h2>
+				</a>
+				<pre><code><span class="hljs-built_in">npm</span> i -S @kaviar/grapher</code></pre>
+				<a href="#a-hrefdocsindexmddocumentationa" id="a-hrefdocsindexmddocumentationa" style="color: inherit; text-decoration: none;">
+					<h2><a href="docs/index.md">Documentation</a></h2>
+				</a>
+				<p>This provides a learning curve for <strong>Grapher</strong> and it explains all the features.</p>
+				<a href="#sample" id="sample" style="color: inherit; text-decoration: none;">
+					<h2>Sample</h2>
+				</a>
+				<pre><code class="language-js"><span class="hljs-keyword">import</span> { query, addLinks } <span class="hljs-keyword">from</span> <span class="hljs-string">"@kaviar/grapher"</span>;
+
+<span class="hljs-keyword">async</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">test</span>(<span class="hljs-params"></span>) </span>{
+  <span class="hljs-keyword">const</span> Post = <span class="hljs-keyword">await</span> db.createCollection(<span class="hljs-string">"Post"</span>);
+  <span class="hljs-keyword">const</span> Comments = <span class="hljs-keyword">await</span> db.createCollection(<span class="hljs-string">"Comments"</span>);
+
+  oneToMany(Comments, Post, {
+    <span class="hljs-attr">linkName</span>: <span class="hljs-string">"post"</span>,
+    <span class="hljs-attr">inversedLinkName</span>: <span class="hljs-string">"comments"</span>,
+  }); <span class="hljs-comment">// also available manyToMany and manyToOne</span>
+
+  query(Post, {
+      <span class="hljs-attr">$</span>: {
+          <span class="hljs-attr">filters</span>: {
+              <span class="hljs-attr">isApproved</span>: <span class="hljs-literal">true</span>
+          }
+      }
+      title: <span class="hljs-number">1</span>,
+      <span class="hljs-attr">comments</span>: {
+          <span class="hljs-attr">name</span>: <span class="hljs-number">1</span>
+      }
+  })
+}</code></pre>
+				<a href="#graphql" id="graphql" style="color: inherit; text-decoration: none;">
+					<h2>GraphQL</h2>
+				</a>
+				<pre><code class="language-js"><span class="hljs-keyword">import</span> { query } <span class="hljs-keyword">from</span> <span class="hljs-string">"@kaviar/grapher"</span>;
+<span class="hljs-keyword">const</span> Query = {
+  <span class="hljs-comment">// Automatically fetches everything in the minimum amount of queries</span>
+  users(_, args, ctx, info) {
+    <span class="hljs-keyword">return</span> query.graphql(Post, info).fetch();
+  },
+};</code></pre>
+				<a href="#quick-illustration" id="quick-illustration" style="color: inherit; text-decoration: none;">
+					<h3>Quick Illustration</h3>
+				</a>
+				<p>Query:</p>
+				<pre><code class="language-js">createQuery({
+  <span class="hljs-attr">posts</span>: {
+    <span class="hljs-attr">title</span>: <span class="hljs-number">1</span>,
+    <span class="hljs-attr">author</span>: {
+      <span class="hljs-attr">fullName</span>: <span class="hljs-number">1</span>,
+    },
+    <span class="hljs-attr">comments</span>: {
+      <span class="hljs-attr">text</span>: <span class="hljs-number">1</span>,
+      <span class="hljs-attr">createdAt</span>: <span class="hljs-number">1</span>,
+      <span class="hljs-attr">author</span>: {
+        <span class="hljs-attr">fullName</span>: <span class="hljs-number">1</span>,
+      },
+    },
+    <span class="hljs-attr">categories</span>: {
+      <span class="hljs-attr">name</span>: <span class="hljs-number">1</span>,
+    },
+  },
+}).fetch();</code></pre>
+				<p>Result:</p>
+				<pre><code>[
+    {
+        _id: <span class="hljs-symbol">'postId</span>',
+        title: <span class="hljs-symbol">'Introducing</span> Grapher',
+        author: {
+            _id: <span class="hljs-symbol">'authorId</span>',
+            fullName: <span class="hljs-symbol">'John</span> Smith
+        },
+        comments: [
+            {
+                _id: <span class="hljs-symbol">'commentId</span>',
+                text: <span class="hljs-symbol">'Nice</span> article!,
+                createdAt: Date,
+                author: {
+                    fullName: <span class="hljs-number">1</span>
+                }
+            }
+        ],
+        categories: [ {_id: <span class="hljs-symbol">'categoryId</span>', name: <span class="hljs-symbol">'JavaScript</span>'} ]
+    }
+]</code></pre>
+			</div>
+		</div>
+		<div class="col-4 col-menu menu-sticky-wrap menu-highlight">
+			<nav class="tsd-navigation primary">
+				<ul>
+					<li class="globals  ">
+						<a href="globals.html"><em>Globals</em></a>
+					</li>
+					<li class="label tsd-is-external">
+						<span>Internals</span>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/___tests___connection_.html">"__tests__/connection"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/___tests___graphql_index_.html">"__tests__/graphql/index"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/___tests___index_.html">"__tests__/index"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/___tests___integration_helpers_.html">"__tests__/integration/helpers"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/___tests___integration_index_.html">"__tests__/integration/index"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/___tests___units_index_.html">"__tests__/units/index"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/___tests___units_intersectdeep_test_.html">"__tests__/units/intersect<wbr>Deep.test"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_core_api_.html">"core/api"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_core_constants_.html">"core/constants"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_core_graphql_asttoquery_.html">"core/graphql/ast<wbr>ToQuery"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_core_query_linker_.html">"core/query/<wbr>Linker"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_core_query_cache_baseresultcacher_.html">"core/query/cache/<wbr>Base<wbr>Result<wbr>Cacher"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_core_query_cache_iresultcacher_.html">"core/query/cache/IResult<wbr>Cacher"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_core_query_cache_memoryresultcacher_.html">"core/query/cache/<wbr>Memory<wbr>Result<wbr>Cacher"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_core_query_hypernova_aggregatesearchfilters_.html">"core/query/hypernova/aggregate<wbr>Search<wbr>Filters"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_core_query_hypernova_assembleaggregateresults_.html">"core/query/hypernova/assemble<wbr>Aggregate<wbr>Results"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_core_query_hypernova_assembler_.html">"core/query/hypernova/assembler"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_core_query_hypernova_buildaggregatepipeline_.html">"core/query/hypernova/build<wbr>Aggregate<wbr>Pipeline"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_core_query_hypernova_constants_.html">"core/query/hypernova/constants"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_core_query_hypernova_hypernova_.html">"core/query/hypernova/hypernova"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_core_query_hypernova_lib_snapbackdottedfields_.html">"core/query/hypernova/lib/snap<wbr>Back<wbr>Dotted<wbr>Fields"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_core_query_hypernova_storehypernovaresults_.html">"core/query/hypernova/store<wbr>Hypernova<wbr>Results"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_core_query_lib_projectionnode_.html">"core/query/lib/<wbr>Projection<wbr>Node"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_core_query_lib_applyprops_.html">"core/query/lib/apply<wbr>Props"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_core_query_lib_computereducers_.html">"core/query/lib/compute<wbr>Reducers"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_core_query_lib_intersectdeep_.html">"core/query/lib/intersect<wbr>Deep"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_core_query_lib_preparefordelivery_.html">"core/query/lib/prepare<wbr>For<wbr>Delivery"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_core_query_lib_projectgraphtodataset_.html">"core/query/lib/project<wbr>Graph<wbr>ToData<wbr>Set"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_core_query_nodes_collectionnode_.html">"core/query/nodes/<wbr>Collection<wbr>Node"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_core_query_nodes_fieldnode_.html">"core/query/nodes/<wbr>Field<wbr>Node"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_core_query_nodes_inode_.html">"core/query/nodes/INode"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_core_query_nodes_reducernode_.html">"core/query/nodes/<wbr>Reducer<wbr>Node"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_core_utils_.html">"core/utils"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_index_.html">"index"</a>
+					</li>
+					<li class="label tsd-is-external">
+						<span>Externals</span>
+					</li>
+					<li class=" tsd-kind-external-module tsd-is-external">
+						<a href="modules/_core_query_query_.html">"core/query/query"</a>
+					</li>
+				</ul>
+			</nav>
+			<nav class="tsd-navigation secondary menu-sticky">
+				<ul class="before-current">
+				</ul>
+			</nav>
+		</div>
+	</div>
+</div>
+<footer class="with-border-bottom">
+	<div class="container">
+		<h2>Legend</h2>
+		<div class="tsd-legend-group">
+			<ul class="tsd-legend">
+				<li class="tsd-kind-module"><span class="tsd-kind-icon">Module</span></li>
+				<li class="tsd-kind-object-literal"><span class="tsd-kind-icon">Object literal</span></li>
+				<li class="tsd-kind-variable"><span class="tsd-kind-icon">Variable</span></li>
+				<li class="tsd-kind-function"><span class="tsd-kind-icon">Function</span></li>
+				<li class="tsd-kind-function tsd-has-type-parameter"><span class="tsd-kind-icon">Function with type parameter</span></li>
+				<li class="tsd-kind-index-signature"><span class="tsd-kind-icon">Index signature</span></li>
+				<li class="tsd-kind-type-alias"><span class="tsd-kind-icon">Type alias</span></li>
+				<li class="tsd-kind-type-alias tsd-has-type-parameter"><span class="tsd-kind-icon">Type alias with type parameter</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-enum"><span class="tsd-kind-icon">Enumeration</span></li>
+				<li class="tsd-kind-enum-member"><span class="tsd-kind-icon">Enumeration member</span></li>
+				<li class="tsd-kind-property tsd-parent-kind-enum"><span class="tsd-kind-icon">Property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-enum"><span class="tsd-kind-icon">Method</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-interface"><span class="tsd-kind-icon">Interface</span></li>
+				<li class="tsd-kind-interface tsd-has-type-parameter"><span class="tsd-kind-icon">Interface with type parameter</span></li>
+				<li class="tsd-kind-constructor tsd-parent-kind-interface"><span class="tsd-kind-icon">Constructor</span></li>
+				<li class="tsd-kind-property tsd-parent-kind-interface"><span class="tsd-kind-icon">Property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-interface"><span class="tsd-kind-icon">Method</span></li>
+				<li class="tsd-kind-index-signature tsd-parent-kind-interface"><span class="tsd-kind-icon">Index signature</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-class"><span class="tsd-kind-icon">Class</span></li>
+				<li class="tsd-kind-class tsd-has-type-parameter"><span class="tsd-kind-icon">Class with type parameter</span></li>
+				<li class="tsd-kind-constructor tsd-parent-kind-class"><span class="tsd-kind-icon">Constructor</span></li>
+				<li class="tsd-kind-property tsd-parent-kind-class"><span class="tsd-kind-icon">Property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-class"><span class="tsd-kind-icon">Method</span></li>
+				<li class="tsd-kind-accessor tsd-parent-kind-class"><span class="tsd-kind-icon">Accessor</span></li>
+				<li class="tsd-kind-index-signature tsd-parent-kind-class"><span class="tsd-kind-icon">Index signature</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-constructor tsd-parent-kind-class tsd-is-inherited"><span class="tsd-kind-icon">Inherited constructor</span></li>
+				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><span class="tsd-kind-icon">Inherited property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><span class="tsd-kind-icon">Inherited method</span></li>
+				<li class="tsd-kind-accessor tsd-parent-kind-class tsd-is-inherited"><span class="tsd-kind-icon">Inherited accessor</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-protected"><span class="tsd-kind-icon">Protected property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-class tsd-is-protected"><span class="tsd-kind-icon">Protected method</span></li>
+				<li class="tsd-kind-accessor tsd-parent-kind-class tsd-is-protected"><span class="tsd-kind-icon">Protected accessor</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><span class="tsd-kind-icon">Private property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-class tsd-is-private"><span class="tsd-kind-icon">Private method</span></li>
+				<li class="tsd-kind-accessor tsd-parent-kind-class tsd-is-private"><span class="tsd-kind-icon">Private accessor</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-static"><span class="tsd-kind-icon">Static property</span></li>
+				<li class="tsd-kind-call-signature tsd-parent-kind-class tsd-is-static"><span class="tsd-kind-icon">Static method</span></li>
+			</ul>
+		</div>
+	</div>
+</footer>
+<div class="container tsd-generator">
+	<p>Generated using <a href="https://typedoc.org/" target="_blank">TypeDoc</a></p>
+</div>
+<div class="overlay"></div>
+<script src="assets/js/main.js"></script>
+<script>if (location.protocol == 'file:') document.write('<script src="assets/js/search.js"><' + '/script>');</script>
+</body>
+</html>
