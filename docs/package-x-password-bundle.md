@@ -1,6 +1,6 @@
 ---
 id: package-x-password-bundle
-title: X Passwords
+title: Passwords
 ---
 
 import useBaseUrl from '@docusaurus/useBaseUrl';
@@ -11,14 +11,10 @@ import useBaseUrl from '@docusaurus/useBaseUrl';
           </a>
         </div>
 
-The **X-Way** of handling passwords by giving you the following utility belt:
+The **X-way** of handling passwords by giving you the following utility belt:
 
 - Creates Apollo endpoints to manipulate the standard process of registration, password change, password reset, email verification
 - Has by default emails for welcoming, verifying your email, resetting password
-
-:::note
-The content and title _can_ include markdown.
-:::
 
 ```typescript
 import { XPasswordBundle } from "@kaviar/x-password-bundle";

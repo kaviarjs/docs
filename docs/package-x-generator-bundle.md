@@ -1,6 +1,6 @@
 ---
 id: package-x-generator-bundle
-title: X Generator
+title: Command-line
 ---
 
 import useBaseUrl from '@docusaurus/useBaseUrl';
@@ -11,196 +11,75 @@ import useBaseUrl from '@docusaurus/useBaseUrl';
           </a>
         </div>
 
-# X Terminal Bundle
+The X-way generator is a command-line utility which enables you to write code the X-way with incredible speed bost provided by the X-way Bundle by Kaviar.
 
-This contains the "x" command which is going to help you immensely in generating the folder structure and files needed to use the "X" way of Kaviar.
+# Install
 
-This bundle is done when:
-
-TODO:
-
-- A way to select which permissions to choose
-
-- Blueprint
+```
+npm i -g @kaviar/x
+x
+```
 
 # x:project
 
-- microservices
-- README.md
+We regard a project as a set of microservices that interract together. For example, these microservices can be the main api, an admin frontend, a web frontend, etc.
 
 # x:microservice
 
-- name
-- type: backend|frontend
+We can create a microservice (currently only works with backend only) using the **X-way** recommended folder structure.
 
-# x:security-bundle
+# x:bundle
 
-# x:new:bundle
-
-- type: local/x/remote
-- name
-- graphql api?
-- collections?
-
-# x:remote:bundle
-
-- name incl. searching (kaviar-bundle tag GitHub)
+By default, you have the `AppBundle` for your microservice. This command is used to create additional bundle. Please note that bundle should be created when you plan on re-using that existing logic outside App. If your bundle depends on AppBundle, it would be advisable to avoid creating it.
 
 # x:collection
 
-- name
-- model?
-  - name
-  - fields entry
-- behaviors (multi-select: timestampable, blameable, soft-deletable
-- entity?
+Create database collections, and creates the possibility of creating GraphQL entities and models with it.
 
-# x:graphql:entity
+# x:collection-link
 
-- name
-- contains resolvers?
-- contains model?
+Create links using Nova between multiple **existing** collections
 
-# x:graphql:input
+# x:event
 
-- name
-- contains validation
-- fields: [
-  name, type
-  ]
+Creates an event class with ability to specify the schema for it
 
-# x:graphql:query
+# x:exception
 
-- name
-- input
-- create a input?
-- return type: single/array
-- return entity: autocomplete entity, allow custom
-- Security: Logged In?
-- If Yes: Permissions? (read permissions)
-- Return with Nova?
-- Return with Service?
-
-# x:graphql:mutation
-
-- name
-- input
-- create a input?
-- return type single/array
-- return entity
-- Security
-- Permissions
-- Service?
-  Create a service "Name", "Method", "link with input"
-
-# x:service
-
-- name
-- needs container?
-- needs entity manager?
-- needs security service?
-- needs permissioning service?
-- methods comma separated?
+Creates an exception class with ability to specify the schema for it
 
 # x:listener
 
-- name
-- multiple choose events to listen on? (optional)
-- find a way to warm them up!
+Creates an event listener, and can be useful for creating listeners for a certain collections
 
-# x:event, x:exception
+# x:fixtures
 
-- name
-- message
-- type: any/custom
-- [field, type]
+Sets up a nice infrastructure for running your fixtures. (Dummy data)
 
-# x:crud
+# x:validator
 
-- collection
-- entity
-- services
-- security
+Creates a validator including type definitions that can be used together with `validator` bundle.
 
-# x:flow
+# x:server-route
 
-- entity
-- collection
-- stateName
-- actionVerb: "set"
-- states
-- dispatches events
+Creates an entry point to listen for server routes (non-GraphQL) requests to your API.
 
-# x:blueprint
+# x:service
 
-x blueprint > autocomplete?
+Creates a service class and ability to specify multiple methods (incl. tests)
 
-## Folder Structure
+# x:graphql-entity
 
-```bash
-.env
-# rest in src
-README.md
-microservice/{m}
-  __tests__
-    index.ts
-  kaviar.json: {
-    "name": "app",
-    "type": "backend",
-    "srcDir": "./src",
-    "distDir": "./dist",
-  }
-  startup/
-    - kernel.ts  // exports default kernel
-    - index.ts // imports all bundles and initialises kernel at the end
-    - bundles
-      - index.ts
-      - bundle1.ts // kernel.addBundle(new Bundle());
-      - bundle2.ts
-  bundles/
-    {bundle}/
-      __tests__
-        index.ts
-        services/
-          ...etc...
-      graphql
-        entities/
-          User/
-            User.graphql
-            // loads types and resolvers
-            User.resolvers.ts
-        inputs/
-          UserCreateInput.graphql
-        queries/
-          index.graphql
-          getUsers.resolvers.ts
-        mutations/
-          index.graphql
-          createUser.resolvers.ts
-        index.ts # Loads all .graphql and resolvers via extract()
-      inputs/
-        UserCreateInput.ts
-      services/
-        MyService.ts
-        index.ts
-      listeners/
-        UserListener.ts
-        index.ts
-      events/
-        index.ts
-        <!-- UserAddedEvent.ts -->
-      exceptions/
-        <!-- UserNotFoundException.ts -->
-        index.ts
-      commands/
-      collections/
-        Users
-          // Users.collection.ts
-          // Users.links.ts
-          // Users.reducers.ts
-          // User.model.ts
-      index.ts
-        - bundle warmsup listeners
-        - loads via graphql index.ts
-        -
-```
+Creates the GraphQL entity with ability to specify the input model for it.
+
+# x:graphql-input
+
+Creates a GraphQL input with ability to enter the schema for it, and also create an actual validatable model.
+
+# x:graphql-mutation + x:graphql-query
+
+Creates a GraphQL query/mutation with ability to specify input, security checks and other useful things.
+
+# x:graphql-crud
+
+Creates a CRUD module for a specified Collection. Note that the CRUD is going to be generic for data inserts, updates and filters. The advantage is that it works for a prototype and you can make it better later.

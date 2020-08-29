@@ -11,9 +11,9 @@ import useBaseUrl from '@docusaurus/useBaseUrl';
           </a>
         </div>
 
-This bundle is to inject into the context the token read from the request and decoded via the SecurityBundle.
+This is used to detect the userId based on the authentication token and inject it inside the GraphQL's context.
 
-## Installation
+## Install
 
 ```bash
 npm i -S @kaviar/apollo-bundle @kaviar/apollo-security-bundle

@@ -6,9 +6,6 @@ module.exports = {
     ],
     "Framework": [
         "package-core",
-        "package-validator",
-        "package-logger",
-        "package-terminal",
         {
             "type": "category",
             "label": "Database",
@@ -17,6 +14,9 @@ module.exports = {
                 "package-nova"
             ]
         },
+        "package-validator",
+        "package-logger",
+        "package-terminal",
         {
             "type": "category",
             "label": "Security",
@@ -38,7 +38,8 @@ module.exports = {
         },
         "package-emails"
     ],
-    "X Way": [
+    "X-way": [
+        "x-way-introduction",
         "package-x-bundle",
         "package-x-password-bundle",
         "package-x-generator-bundle"

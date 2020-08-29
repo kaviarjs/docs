@@ -101,11 +101,11 @@ export interface IWelcomeEmailProps {
 }
 
 // To send your email is easy
-export const WelcomeEmail: React.FC<IWelcomeEmailProps> = (props) => {
+export const WelcomeEmail = (props: IWelcomeEmailProps) => {
   return <div>Hello {props.name}</div>;
 };
 
-WelcomeEmail.subject = (props) => `Hello ${props.name}`;
+WelcomeEmail.subject = (props: IWelcomeEmailProps) => `Hello ${props.name}`;
 
 // The send argument IWelcomeEmailProps is optional, but it does help you ensure props is correctly sent
 await emailService.send<IWelcomeEmailProps>(
@@ -140,10 +140,39 @@ import * as mjml2html from "mjml";
 class EmailListener extends Listener {
   @On(EmailBeforeSendEvent)
   transformMjml(event: EmailBeforeSendEvent) {
-    const { html } = event.mailOptions;
-    event.mailOptions.html = mjml2html(html);
+    const { html } = event.data.mailOptions;
+    event.data.mailOptions.html = mjml2html(html);
   }
 }
 ```
 
 Another alternative would be to use the react version of it: https://github.com/wix-incubator/mjml-react and bypass the need of a listener.
+
+## Global Variables
+
+Following the same pattern as above, you can listen to emails before they get rendered via `EmailBeforeRenderEvent` and inject a variable such as "applicationUrl" or a router:
+
+```ts
+class EmailListener extends Listener {
+  @On(EmailBeforeRenderEvent)
+  extendProps(event: EmailBeforeRenderEvent) {
+    const { emailTemplate } = event.data;
+
+    Object.assign(emailTemplate.props, {
+      appUrl: "http://www.google.com",
+    });
+  }
+}
+```
+
+And you can have a sort of "master" interface for these global props:
+
+```ts
+export interface IGlobalEmailProps {
+  appUrl: string;
+}
+
+export interface IWelcomeEmailProps {
+  name: string;
+}
+```

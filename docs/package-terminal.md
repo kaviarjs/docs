@@ -72,8 +72,7 @@ class DropCollectionCommand implements IExecutor<{ collectionName: string }> {
 import { CommanderService } from "@kaviar/terminal-bundle";
 
 CommanderService.registerCommand({
-  namespace: "app",
-  name: "drop-collection"
+  id: "app:drop-collection"
   executor: DropCollectionCommand
 });
 
@@ -157,8 +156,7 @@ class DropCollectionInquirer extends Inquirer<DropCollectionModel> {
 
 // Now re-use the same executor
 CommanderService.registerCommand({
-  namespace: "app",
-  name: "drop-collection",
+  id: "app:drop-collection",
   inquirer: DropCollectionInquirer,
   executor: DropCollectionCommand,
 });

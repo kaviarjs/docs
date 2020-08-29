@@ -36,6 +36,23 @@ export const map: IElementMap = {
       typeDocs: true,
     },
     {
+      groupLabel: "Database",
+      elements: [
+        {
+          id: "mongo",
+          title: "MongoDB",
+          package: "mongo-bundle",
+          typeDocs: true,
+        },
+        {
+          id: "nova",
+          title: "Nova",
+          package: "nova",
+          typeDocs: true,
+        },
+      ],
+    },
+    {
       id: "validator",
       title: "Validator",
       package: "validator",
@@ -53,23 +70,6 @@ export const map: IElementMap = {
       title: "Terminal",
       package: "terminal-bundle",
       typeDocs: true,
-    },
-    {
-      groupLabel: "Database",
-      elements: [
-        {
-          id: "mongo",
-          title: "MongoDB",
-          package: "mongo-bundle",
-          typeDocs: true,
-        },
-        {
-          id: "nova",
-          title: "Nova",
-          package: "nova",
-          typeDocs: true,
-        },
-      ],
     },
     {
       groupLabel: "Security",
@@ -130,22 +130,26 @@ export const map: IElementMap = {
       typeDocs: true,
     },
   ],
-  "X Way": [
+  "X-way": [
+    {
+      id: "x-way-introduction",
+      title: "Introduction",
+    },
     {
       id: "x-bundle",
-      title: "X Bundle",
+      title: "Toolkit",
       package: "x-bundle",
       typeDocs: true,
     },
     {
       id: "x-password-bundle",
-      title: "X Passwords",
+      title: "Passwords",
       package: "x-password-bundle",
       typeDocs: true,
     },
     {
       id: "x-generator-bundle",
-      title: "X Generator",
+      title: "Command-line",
       package: "x-generator-bundle",
       typeDocs: true,
     },

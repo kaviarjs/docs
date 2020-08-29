@@ -91,7 +91,7 @@ Available events that can be imported from the package:
 They are very explicit and typed with what they contain, a sample usage would be:
 
 ```typescript
-import { BeforeInsertEvent } from "@kaviar/mongo-bundle";
+import { AfterInsertEvent } from "@kaviar/mongo-bundle";
 
 eventManager.addListener(AfterInsertEvent, async (e: AfterInsertEvent) => {
   if (e.collection instanceof PostsCollection) {
