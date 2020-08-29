@@ -7,9 +7,13 @@ module.exports = {
   organizationName: "facebook", // Usually your GitHub org/user name.
   projectName: "KAVIARJS", // Usually your repo name.
   onBrokenLinks: "warn",
+  plugins: ["@docusaurus/plugin-google-analytics"],
   themeConfig: {
     colorMode: {
       disableSwitch: true,
+    },
+    googleAnalytics: {
+      trackingID: "UA-40568040-12",
     },
     navbar: {
       title: "",
@@ -23,6 +27,11 @@ module.exports = {
           activeBasePath: "docs",
           label: "Docs",
           position: "left",
+        },
+        {
+          href: "https://www.reddit.com/r/KaviarJS",
+          label: "Reddit",
+          position: "right",
         },
         {
           href: "https://github.com/kaviarjs/docs",
