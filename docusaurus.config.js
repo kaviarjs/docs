@@ -7,13 +7,17 @@ module.exports = {
   organizationName: "facebook", // Usually your GitHub org/user name.
   projectName: "KAVIARJS", // Usually your repo name.
   onBrokenLinks: "warn",
-  plugins: ["@docusaurus/plugin-google-analytics"],
   themeConfig: {
     colorMode: {
       disableSwitch: true,
     },
     googleAnalytics: {
       trackingID: "UA-40568040-12",
+    },
+    algolia: {
+      apiKey: "42e5ce65aa65f5bbc8fb34a45aab2a52",
+      indexName: "kaviarjs",
+      searchParameters: {}, // Optional (if provided by Algolia)
     },
     navbar: {
       title: "",
