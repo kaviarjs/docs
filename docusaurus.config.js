@@ -6,6 +6,7 @@ module.exports = {
   favicon: "img/favicon.ico",
   organizationName: "facebook", // Usually your GitHub org/user name.
   projectName: "KAVIARJS", // Usually your repo name.
+  onBrokenLinks: "warn",
   themeConfig: {
     colorMode: {
       disableSwitch: true,
@@ -23,7 +24,6 @@ module.exports = {
           label: "Docs",
           position: "left",
         },
-        { to: "blog", label: "Blog", position: "left" },
         {
           href: "https://github.com/kaviarjs/docs",
           label: "GitHub",
@@ -63,10 +63,6 @@ module.exports = {
         {
           title: "More",
           items: [
-            {
-              label: "Blog",
-              to: "blog",
-            },
             {
               label: "GitHub",
               href: "https://github.com/kaviarjs/docs",
