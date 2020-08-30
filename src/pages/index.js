@@ -9,7 +9,7 @@ import styles from "./styles.module.css";
 const features = [
   {
     title: <>Modular Framework</>,
-    imageUrl: "img/undraw_docusaurus_mountain.svg",
+    // imageUrl: "img/undraw_docusaurus_mountain.svg",
     description: (
       <>
         It's time, with the help of TypeScript to bring cooperative
@@ -19,7 +19,7 @@ const features = [
   },
   {
     title: <>No-nonsense Documentation</>,
-    imageUrl: "img/undraw_docusaurus_tree.svg",
+    // imageUrl: "img/undraw_docusaurus_tree.svg",
     description: (
       <>
         Documentation is the key to understanding the capability of a framework
@@ -30,7 +30,7 @@ const features = [
   },
   {
     title: <>Generate Fast.</>,
-    imageUrl: "img/undraw_docusaurus_react.svg",
+    // imageUrl: "img/undraw_docusaurus_react.svg",
     description: (
       <>
         Using the X-way from Kaviar, you can generate from command line multiple
@@ -68,14 +68,13 @@ function Home() {
         <div className="container">
           <embed src="/img/logo-orange.svg" height="100px" alt="Kaviar Logo" />
           <p className="hero__subtitle">
-            For the <span style={{ fontStyle: "italic" }}>classy</span> and the{" "}
-            <strong>bold</strong> developers.
+            Develop <strong>fast</strong> with zero compromise.
             <br />
           </p>
           <div className={styles.buttons}>
             <Link
               className={classnames(
-                "button button--outline button--secondary button--lg",
+                "button button--outline button--lg",
                 styles.getStarted
               )}
               to={useBaseUrl("docs/")}

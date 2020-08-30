@@ -14,9 +14,7 @@ module.exports = {
                 "package-nova"
             ]
         },
-        "package-validator",
         "package-logger",
-        "package-terminal",
         {
             "type": "category",
             "label": "Security",
@@ -36,7 +34,9 @@ module.exports = {
                 "package-apollo-security"
             ]
         },
-        "package-emails"
+        "package-emails",
+        "package-terminal",
+        "package-validator"
     ],
     "X-way": [
         "x-way-introduction",

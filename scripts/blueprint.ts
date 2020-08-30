@@ -53,22 +53,9 @@ export const map: IElementMap = {
       ],
     },
     {
-      id: "validator",
-      title: "Validator",
-      package: "validator",
-      typeDocs: true,
-    },
-
-    {
       id: "logger",
       title: "Logger",
       package: "logger-bundle",
-      typeDocs: true,
-    },
-    {
-      id: "terminal",
-      title: "Terminal",
-      package: "terminal-bundle",
       typeDocs: true,
     },
     {
@@ -129,6 +116,18 @@ export const map: IElementMap = {
       package: "email-bundle",
       typeDocs: true,
     },
+    {
+      id: "terminal",
+      title: "Terminal",
+      package: "terminal-bundle",
+      typeDocs: true,
+    },
+    {
+      id: "validator",
+      title: "Validator",
+      package: "validator",
+      typeDocs: true,
+    },
   ],
   "X-way": [
     {
@@ -137,7 +136,7 @@ export const map: IElementMap = {
     },
     {
       id: "x-bundle",
-      title: "Toolkit",
+      title: "X-Bundle",
       package: "x-bundle",
       typeDocs: true,
     },

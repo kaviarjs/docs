@@ -61,15 +61,11 @@ module.exports = {
           items: [
             {
               label: "Stack Overflow",
-              href: "https://stackoverflow.com/questions/tagged/docusaurus",
+              href: "https://stackoverflow.com/questions/tagged/kaviarjs",
             },
             {
-              label: "Discord",
-              href: "https://discordapp.com/invite/docusaurus",
-            },
-            {
-              label: "Twitter",
-              href: "https://twitter.com/docusaurus",
+              label: "Reddit",
+              href: "https://reddit.com/r/KaviarJS",
             },
           ],
         },
@@ -92,7 +88,6 @@ module.exports = {
       {
         docs: {
           // It is recommended to set document id as docs home page (`docs/` path).
-          homePageId: "framework-introduction",
           sidebarPath: require.resolve("./sidebars.js"),
           // Please change this to your repo.
           editUrl:

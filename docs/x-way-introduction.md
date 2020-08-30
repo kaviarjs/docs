@@ -3,8 +3,6 @@ id: x-way-introduction
 title: Introduction
 ---
 
-## What is X-way?
-
 X-way is using Kaviar's goodies to provide an opinionated application development "way" of doing things. By enforcing database (MongoDB), API layer (GraphQL), Folder Structures & Naming Conventions, so it opens the path to fast prototyping.
 
 Everything starts by installing the command line generator:
@@ -26,3 +24,5 @@ From then on you will use the documentation to generate things such as:
 - Data Fixtures
 
 ...and others!
+
+Feel free to read about the tools offered by `X-Bundle` then you can dive into using the generator and quickly create your app.

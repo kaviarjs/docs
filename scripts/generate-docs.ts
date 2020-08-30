@@ -68,26 +68,26 @@ function processSidebarElements(
 function pushNewSingleElement(element: IElement, result: any[]) {
   if (element.package) {
     const GENERATED_ID = `package-${element.id}`;
-    const GENERATED_FILE = `${GENERATED_ID}.md`;
+    const GENERATED_FILE = `${GENERATED_ID}.mdx`;
+    const packageJsonPath = path.join(
+      PACKAGE_DIR,
+      element.package,
+      "package.json"
+    );
+    const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, "utf8"));
+
     result.push(GENERATED_ID);
 
-    let viewApiLink = "";
-    if (element.typeDocs) {
-      viewApiLink = `<div className="view-api-container">
-          <a href={useBaseUrl('static/api/${element.package}/')} target="_blank" className="view-api">
-            View API
-          </a>
-        </div>`;
-    }
+    const typeDefsSection = element.typeDocs ? "containsTypeDefs" : "";
 
     const prefix = `---
 id: ${GENERATED_ID}
 title: ${element.title}
 ---
 
-import useBaseUrl from '@docusaurus/useBaseUrl';
+import { PackageHeader } from "@site/src/components/PackageHeader";
 
-${viewApiLink}
+<PackageHeader version="${packageJson.version}" packageName="${element.package}" ${typeDefsSection} />
 `;
 
     const docFilePath = path.join(PACKAGE_DIR, element.package, DOC_FILE);
@@ -96,7 +96,11 @@ ${viewApiLink}
     fs.writeFileSync(path.join(DOCS_DIR, GENERATED_FILE), contents);
 
     if (element.typeDocs) {
-      // generateTypeDoc(element.package);
+      try {
+        // generateTypeDoc(element.package);
+      } catch (e) {
+        console.error(e);
+      }
     }
   } else {
     result.push(element.id);

@@ -15,6 +15,7 @@
   --ifm-color-primary-lighter: rgb(102, 212, 189);
   --ifm-color-primary-lightest: rgb(146, 224, 208);
   --ifm-code-font-size: 95%;
+  font-size: 14px;
 }
 
 .docusaurus-highlight-code-line {
@@ -24,18 +25,30 @@
   padding: 0 var(--ifm-pre-padding);
 }
 
-.view-api-container {
+.package-header-container {
   margin-bottom: 20px;
+  text-align: right;
+  width: 100%;
 }
 
-.view-api {
+.package-header-container .link {
   display: inline-block;
-  padding: 5px 15px;
+  padding: 2px 15px;
   border-radius: 3px;
   border: 1px solid var(--ifm-color-primary);
+  margin-right: 5px;
 }
-.view-api:hover {
+
+.package-header-container .link:last-child {
+  margin-right: 0;
+}
+
+.package-header-container .link:hover {
   text-decoration: none;
   color: #fff;
   background: var(--ifm-color-primary);
+}
+
+.package-header-container .version {
+  cursor: default;
 }

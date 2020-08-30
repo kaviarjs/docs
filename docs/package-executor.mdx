@@ -1,0 +1,190 @@
+---
+id: package-executor
+title: Executor
+---
+
+import { PackageHeader } from "@site/src/components/PackageHeader";
+
+<PackageHeader version="1.0.0" packageName="executor" containsTypeDefs />
+
+Executor is a pattern for creating function maps that re-use logic. This is designed to work perfectly with GraphQL resolvers. The main concept is the fact that resolvers in GraphQL act as controllers. They needn't hold logic, but rather delegate this logic to services.
+
+## Install
+
+```bash
+npm install --save @kaviar/executor
+```
+
+## Resolvers
+
+A resolver's job is usually:
+
+- Check if inputs are fine (Validation)
+- Check security and permission rights (Authorisation)
+- Execute the command delegated to a service (Delegation)
+- Manipulate the response to fit the client's request (Response Manipulation)
+
+Let's imagine our resolver, to add a post:
+
+```ts
+{
+  Mutation: {
+    PostAdd(_, args, ctx) {
+      // do it
+    }
+  }
+}
+```
+
+The function `postAdd` gets transformed to an array of functions:
+
+```ts
+{
+  Mutation: execute({
+    PostAdd: [
+      // Now you can chain functions which are executed in the order here
+      (_, args, ctx) => {
+        // do things
+      },
+    ],
+  });
+}
+```
+
+A more concrete example:
+
+```typescript
+import { execute } from "@kaviar/executor";
+
+load({
+  typeDefs,
+  resolvers: {
+    Query: execute({
+      PostAdd: [
+        async function(_, args, ctx) {
+          const postService = ctx.container.get(PostService);
+          return postService.addPost(args.post);
+        },
+      ],
+      PostRemove: [
+        // These are the plugins
+        CheckLoggedIn(),
+        CheckPostRights("postId"),
+        async (_, args, ctx) => {},
+      ],
+    }),
+  },
+});
+```
+
+## Plugins
+
+A plugin, is a function that returns a resolver function.
+
+Writing the `CheckLoggedIn` plugin:
+
+```typescript
+interface ICheckLoggedInConfig {
+  errorMessage?: string;
+}
+
+const CheckLoggedIn = async function(options: ICheckLoggedInConfig) {
+  if (options.errorMessage) {
+    options.errorMessage = "User not authorized";
+  }
+
+  // This returns a resolver function
+  return async function CheckLoggedIn(_, args, ctx) {
+    // We assume that if the user is ok, everytime we inject userId into the context
+    if (!ctx.userId) {
+      throw new Error(options.errorMessage);
+    }
+  };
+};
+```
+
+```typescript
+export default {
+  Query: execute({
+    PostAdd: [
+      CheckLoggedIn({ errorMessage: "Not allowed to add post" }),
+      async (_, args, ctx) => {
+        // Add the post as no exception was thrown
+      },
+    ],
+  }),
+};
+```
+
+## Response Manipulators
+
+You can also write response manipulators, for example your function returns undefined/false, but you want to return a success response:
+
+```typescript
+load({
+  typeDefs: `
+    type Response {
+      success: Boolean!
+      errorMessage: String
+    }
+  `,
+  resolvers: {
+    Query: execute({
+      Something: [() => "something", ManipulateEndResponse()],
+    }),
+  },
+});
+```
+
+```typescript
+import { getResult } from "@kaviar/executor";
+
+const ManipulateEndResponse = () => {
+  return async function ManipulateEndResponse(_, args, ctx) {
+    // The previous result in the execution pipeline is stored in the context
+    // The pipeline, however, will return the response of the last element in the pipeline
+    const previousResponse = getResult(ctx);
+
+    // Do whatever
+    return {
+      success: true,
+    };
+  };
+};
+```
+
+## Groups
+
+When you're creating logic you're most likely want to reuse it, this is why we introduce bundling plugins:
+
+```typescript
+import { group } from "@kaviar/executor";
+
+load({
+  typeDefs,
+  resolvers: {
+    Query: group(
+      // BEFORE PLUGINS
+      [CheckLoggedIn()],
+
+      // EXECUTION MAP
+      {
+        PostAdd: async (_, args, ctx, x) => {
+          const postService = ctx.container.get(PostService);
+          return postService.addPost(args.post);
+        },
+
+        PostRemove: [
+          CheckPostRights("postId"),
+          async (_, args, ctx) => {
+            // Run check for post rights
+          },
+        ],
+      },
+
+      // AFTER
+      [ManipulateEndResponse()]
+    ),
+  },
+});
+```
