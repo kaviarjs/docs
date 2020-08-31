@@ -68,7 +68,7 @@ function Home() {
         <div className="container">
           <embed src="/img/logo-orange.svg" height="100px" alt="Kaviar Logo" />
           <p className="hero__subtitle">
-            Develop <strong>fast</strong> with zero compromise.
+            rapid development — zero compromises
             <br />
           </p>
           <div className={styles.buttons}>
