@@ -12,6 +12,10 @@
   overflow: hidden;
 }
 
+.communityBanner {
+  background: #f19124;
+}
+
 @media screen and (max-width: 966px) {
   .heroBanner {
     padding: 2rem;

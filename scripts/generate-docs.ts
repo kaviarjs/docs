@@ -12,7 +12,7 @@ import { execSync } from "child_process";
 import * as fse from "fs-extra";
 
 const PACKAGE_DIR = path.join(__dirname, "..", "..", "packages");
-const API_PATH = path.join(__dirname, "..", "static", "api");
+const API_PATH = path.join(__dirname, "..", "static", "type-docs");
 const DOCS_DIR = path.join(__dirname, "..", "docs");
 const DOC_FILE = "DOCUMENTATION.md";
 const SIDEBARS_FILE = path.join(__dirname, "..", "sidebars.js");

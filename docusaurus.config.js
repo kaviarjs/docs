@@ -1,12 +1,13 @@
 module.exports = {
   title: "KaviarJS",
-  tagline: "For the classy and the bold.",
-  url: "https://kaviarjs.com",
+  tagline: "rapid development — zero compromises",
+  url: "https://www.kaviarjs.com",
   baseUrl: "/",
   favicon: "img/favicon.ico",
   organizationName: "facebook", // Usually your GitHub org/user name.
   projectName: "KAVIARJS", // Usually your repo name.
   onBrokenLinks: "warn",
+  // plugins: ["docusaurus-plugin-sass"],
   themeConfig: {
     colorMode: {
       disableSwitch: true,
@@ -15,7 +16,7 @@ module.exports = {
       trackingID: "UA-40568040-12",
     },
     algolia: {
-      apiKey: "42e5ce65aa65f5bbc8fb34a45aab2a52",
+      apiKey: "fc3ffd92e766ee16a3af53c0862f1e91",
       indexName: "kaviarjs",
       searchParameters: {}, // Optional (if provided by Algolia)
     },
@@ -33,6 +34,18 @@ module.exports = {
           position: "left",
         },
         {
+          to: "community/",
+          activeBasePath: "community",
+          label: "Community",
+          position: "left",
+        },
+        {
+          to: "devnet/",
+          activeBasePath: "devnet",
+          label: "DevNet",
+          position: "left",
+        },
+        {
           href: "https://www.reddit.com/r/KaviarJS",
           label: "Reddit",
           position: "right",
@@ -45,7 +58,7 @@ module.exports = {
       ],
     },
     footer: {
-      style: "dark",
+      style: "light",
       links: [
         {
           title: "Docs",
@@ -53,6 +66,10 @@ module.exports = {
             {
               label: "Introduction",
               to: "docs/",
+            },
+            {
+              label: "X-way",
+              to: "docs/x-way-introduction",
             },
           ],
         },
@@ -76,6 +93,10 @@ module.exports = {
               label: "GitHub",
               href: "https://github.com/kaviarjs/docs",
             },
+            {
+              label: "Newsletter",
+              href: "http://eepurl.com/hcoxCj",
+            },
           ],
         },
       ],
@@ -90,12 +111,11 @@ module.exports = {
           // It is recommended to set document id as docs home page (`docs/` path).
           sidebarPath: require.resolve("./sidebars.js"),
           // Please change this to your repo.
-          editUrl:
-            "https://github.com/facebook/docusaurus/edit/master/website/",
+          editUrl: "https://github.com/kaviarjs/docs/edit/master",
         },
         theme: {
           disableSwitch: true,
-          customCss: require.resolve("./src/css/custom.css"),
+          customCss: require.resolve("./src/css/main.css"),
         },
       },
     ],

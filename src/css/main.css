@@ -52,3 +52,56 @@
 .package-header-container .version {
   cursor: default;
 }
+
+.newsletter-container {
+  padding: 60px 30px;
+  text-align: center;
+  background: #eee;
+}
+
+.newsletter-container .signup-button {
+  margin-top: 20px;
+}
+
+.newsletter-container .pinky {
+  font-weight: bold;
+}
+
+.newsletter-container .no-spam {
+  color: #666;
+}
+
+.explained-container {
+  text-align: center;
+  padding: 60px 0;
+  background: rgb(255, 224, 203);
+}
+
+.explained-container h1 {
+  margin-bottom: 25px;
+}
+
+.explained-container .tabs {
+  max-width: 800px;
+  margin: 0 auto;
+  align-items: center;
+
+  justify-content: center;
+}
+
+.explained-container div[role="tabpanel"] {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 25px;
+}
+
+.feature-element {
+  text-align: center;
+}
+.feature-element .icon {
+  font-size: 5rem;
+}
+
+.feature-element .icon:hover {
+  color: var(--ifm-color-primary);
+}

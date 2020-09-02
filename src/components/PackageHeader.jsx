@@ -9,11 +9,7 @@ export function PackageHeader({
   return (
     <div className="package-header-container">
       {containsTypeDefs && (
-        <a
-          href={useBaseUrl(`static/api/${packageName}/`)}
-          target="_blank"
-          className="link"
-        >
+        <a href={`/type-docs/${packageName}/`} target="_blank" className="link">
           Type Docs
         </a>
       )}
