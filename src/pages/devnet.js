@@ -20,7 +20,7 @@ const features = [
     ),
   },
   {
-    title: <>Apply as a developer</>,
+    title: <>Apply as a Developer</>,
     // imageUrl: "img/undraw_docusaurus_tree.svg",
     description: (
       <>
@@ -30,13 +30,14 @@ const features = [
     ),
   },
   {
-    title: <>Build your team.</>,
+    title: <>Build your Team.</>,
     // imageUrl: "img/undraw_docusaurus_react.svg",
     description: (
       <>
-        Work with us to find the perfect team for your project, we deliver
-        Project Management &and; Audit, Quality Assurance, Developers, Designers
-        fit for your project.
+        Work with us to find the perfect team for your project. We have
+        resources for: Backend Development (Kaviar), Frontend Development
+        (React), Project Management &and; Audit, Quality Assurance, Developers,
+        Designers fit for your project.
       </>
     ),
   },

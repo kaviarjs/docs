@@ -28,6 +28,10 @@ export const map: IElementMap = {
       title: "Introduction",
     },
     {
+      id: "framework-learning-curve",
+      title: "Learning Curve",
+    },
+    {
       id: "framework-roadmap",
       title: "Roadmap",
     },

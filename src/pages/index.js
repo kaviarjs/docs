@@ -29,9 +29,9 @@ const features = [
     // imageUrl: "img/undraw_docusaurus_react.svg",
     description: (
       <>
-        Using the X-way from Kaviar, you can generate from command-line your
-        favorite elements which accelerate prototyping of apps and bring back
-        enjoyment to coding.
+        Using the <Link to="/docs/x-way-introduction">X-way</Link> from Kaviar,
+        you can generate from command-line your favorite elements which
+        accelerate prototyping of apps and bring back enjoyment to coding.
       </>
     ),
   },
@@ -42,9 +42,9 @@ const features = [
     description: (
       <>
         We believe that if you were to choose a framework, you should chose one
-        that will last the test of time. Kaviar currently has the ridiculously
-        long support until December 2026. So you are safe to build on Kaviar. We
-        have your back.
+        that will last the test of time. Kaviar packages have the current LTS
+        support until December 2026. So you are safe to build your business with
+        us.
       </>
     ),
   },
