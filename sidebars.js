@@ -2,7 +2,9 @@
 module.exports = {
   someSidebar: {
     "Introduction": [
-        "framework-introduction"
+        "framework-introduction",
+        "framework-learning-curve",
+        "framework-roadmap"
     ],
     "Framework": [
         "package-core",
@@ -28,15 +30,14 @@ module.exports = {
             "type": "category",
             "label": "GraphQL",
             "items": [
-                "package-loader",
-                "package-executor",
+                "package-graphql",
                 "package-apollo",
                 "package-apollo-security"
             ]
         },
         "package-emails",
         "package-terminal",
-        "package-validator"
+        "package-validator-bundle"
     ],
     "X-way": [
         "x-way-introduction",

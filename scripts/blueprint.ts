@@ -93,15 +93,9 @@ export const map: IElementMap = {
       groupLabel: "GraphQL",
       elements: [
         {
-          id: "loader",
-          title: "Loader",
-          package: "loader",
-          typeDocs: true,
-        },
-        {
-          id: "executor",
-          title: "Executor",
-          package: "executor",
+          id: "graphql",
+          title: "Basics",
+          package: "graphql-bundle",
           typeDocs: true,
         },
         {
@@ -131,9 +125,9 @@ export const map: IElementMap = {
       typeDocs: true,
     },
     {
-      id: "validator",
-      title: "Validator",
-      package: "validator",
+      id: "validator-bundle",
+      title: "Validation",
+      package: "validator-bundle",
       typeDocs: true,
     },
   ],

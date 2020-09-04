@@ -400,31 +400,36 @@ export default /* GraphQL */ `
 Below you have a complete CRUD that later you can easily adapt to have type-safety at GraphQL level. This is very useful when you are generating lots of them.
 
 ```ts
-import { group } from "@kaviar/executor";
 import * as X from "@kaviar/x-bundle";
 
 export default {
-  Query: group([], {
-    adminPostsFindOne: [X.ToNovaOne(PostsCollection)],
-    adminPostsFind: [X.ToNova(PostsCollection)],
-    adminPostsCount: [X.ToCollectionCount(PostsCollection)],
-  }),
-  Mutation: group([], {
-    adminPostsInsertOne: [
-      X.ToDocumentInsert(PostsCollection),
-      X.ToNovaByID(PostsCollection),
-    ],
-    adminPostsUpdateOne: [
-      X.CheckDocumentExists(PostsCollection),
-      X.ToDocumentUpdateByID(PostsCollection),
-      X.ToNovaByID(PostsCollection),
-    ],
-    adminPostsDeleteOne: [
-      X.CheckDocumentExists(PostsCollection),
-      X.ToDocumentDeleteByID(PostsCollection),
-      X.ToNovaByID(PostsCollection),
-    ],
-  }),
+  Query: [
+    [],
+    {
+      adminPostsFindOne: [X.ToNovaOne(PostsCollection)],
+      adminPostsFind: [X.ToNova(PostsCollection)],
+      adminPostsCount: [X.ToCollectionCount(PostsCollection)],
+    },
+  ],
+  Mutation: [
+    [],
+    {
+      adminPostsInsertOne: [
+        X.ToDocumentInsert(PostsCollection),
+        X.ToNovaByID(PostsCollection),
+      ],
+      adminPostsUpdateOne: [
+        X.CheckDocumentExists(PostsCollection),
+        X.ToDocumentUpdateByID(PostsCollection),
+        X.ToNovaByID(PostsCollection),
+      ],
+      adminPostsDeleteOne: [
+        X.CheckDocumentExists(PostsCollection),
+        X.ToDocumentDeleteByID(PostsCollection),
+        X.ToNovaByID(PostsCollection),
+      ],
+    },
+  ],
 };
 ```
 

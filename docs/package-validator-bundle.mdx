@@ -1,20 +1,20 @@
 ---
-id: package-validator
-title: Validator
+id: package-validator-bundle
+title: Validation
 ---
 
 import { PackageHeader } from "@site/src/components/PackageHeader";
 
-<PackageHeader version="1.0.0" packageName="validator" containsTypeDefs />
+<PackageHeader version="1.0.0" packageName="validator-bundle" containsTypeDefs />
 
 This package contains a naet, TypeScript-oriented solution to validating models, creating custom validation constraints that are container-aware. It leverages the awesome [yup validation package](https://github.com/jquense/yup).
 
 ```bash
-npm i -S @kaviar/validator
+npm i -S @kaviar/validator-bundle
 ```
 
 ```typescript
-import { a, an, Is, Schema, Nested } from "@kaviar/validator";
+import { a, an, Is, Schema, Nested } from "@kaviar/validator-bundle";
 
 // a, an === yup basically
 @Schema()
@@ -63,7 +63,7 @@ It's always a good idea to be able to customise validations, so here is our solu
 
 ```typescript
 import { Service, Inject } from "@kaviar/core";
-import { yup, IValidationMethod } from "@kaviar/validator";
+import { yup, IValidationMethod } from "@kaviar/validator-bundle";
 
 export interface IUniqueFieldValidationConfig {
   message?: string;
@@ -104,13 +104,13 @@ And ensure TypeScript knows about this:
 
 ```typescript
 // declarations.ts
-import "@kaviar/validator";
+import "@kaviar/validator-bundle";
 import { IUniqueFieldValidationConfig } from "./validator.ts";
 
 /**
  * We need to be able to have autocompletion and extend the "yup" from within our validator.
  */
-declare module "@kaviar/validator" {
+declare module "@kaviar/validator-bundle" {
   // eslint-disable-next-line
   export module yup {
     export interface StringSchema {
@@ -148,7 +148,7 @@ Now let's say you receive from inputs a date, but not an object date, a string, 
 
 ```typescript
 import * as moment from "moment";
-import { yup, IValidationMethod } from "@kaviar/validator";
+import { yup, IValidationMethod } from "@kaviar/validator-bundle";
 
 type IDateTransformerConfig = string;
 

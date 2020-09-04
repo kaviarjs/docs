@@ -1,18 +1,129 @@
 ---
-id: package-executor
-title: Executor
+id: package-graphql
+title: Basics
 ---
 
 import { PackageHeader } from "@site/src/components/PackageHeader";
 
-<PackageHeader version="1.0.0" packageName="executor" containsTypeDefs />
+<PackageHeader version="1.0.0" packageName="graphql-bundle" containsTypeDefs />
 
-Executor is a pattern for creating function maps that re-use logic. This is designed to work perfectly with GraphQL resolvers. The main concept is the fact that resolvers in GraphQL act as controllers. They needn't hold logic, but rather delegate this logic to services.
+The GraphQL Bundle is an abstract way to load your Type Definitions, Resolvers, Scalars, Context Transformers/Reducers in a unified place. We made this design choice to be able to hook it with any kind of GraphQL server without making any change to your code. For example, if there's another bundle that instantiates a GraphQL server, you can later swap it for let's say a `serverless` bundle without making any changes to your code.
+
+Besides this loading strategy this bundle comes with:
+
+- Mechanism to automatically load GraphQL files based on file system conventions
+- A composition strategy for your resolvers to re-use code
+
+It does automatic type and resolver merging and you can also load context manipulators and schema directives.
 
 ## Install
 
-```bash
-npm install --save @kaviar/executor
+```
+npm install --save @kaviar/loader
+```
+
+## Usage
+
+```js
+import { Loader } from "@kaviar/graphql-bundle";
+
+// Without Kaviar Bundles
+const loader = new Loader();
+// Or inside prepare() phase of your Bundle
+const loader = container.get < Loader > Loader;
+
+loader.load({
+  // Can also be array of strings
+  typeDefs: `
+    type Query {
+      sayHello: String
+    }
+  `,
+
+  // Can also be array of resolvers
+  resolvers: {
+    Query: {
+      sayHello: () => "Hello world!",
+    },
+  },
+
+  // Can also be array of objects
+  schemaDirectives: {
+    name: MyDirective,
+  },
+
+  // Can be array of functions, we recommend to name your functions
+  // So when it fails you can at least identify easily from where
+  contextReducers: async function processNewVariables(context) {
+    return {
+      ...context,
+      newVariable: "newValue",
+    };
+  },
+});
+```
+
+## Getting it all together
+
+This would happen when you want to instantiate your server
+
+```js
+const {
+  typeDefs,
+  resolvers,
+  schemaDirectives,
+  contextReducers,
+} = loader.getSchema();
+```
+
+## Auto Loading
+
+Given that you store your resolvers in: `resolvers.ts` or in `*.resolvers.ts`, and your types in `*.graphql.ts`, you are able to extract the loading module like this:
+
+```typescript title="graphql/index.ts"
+import { extract } from "@kaviar/graphql-bundle";
+
+// This exports a GraphQL Module, directly laodable via loader.load()
+export default extract(__dirname);
+```
+
+## Types
+
+```typescript title="graphql/User.graphql.ts"
+export default /* GraphQL */ `
+  type User {
+    firstName: String!
+    lastName: String!
+    fullName: String!
+  }
+`;
+```
+
+```typescript title="graphql/User.resolvers.ts"
+export default {
+  User: {
+    fullName(user) {
+      return user.firstName + " " + user.lastName;
+    },
+  },
+};
+```
+
+You also have the ability to store both resolvers and types or things such as context reducers and schema directives. You should use the `*.graphql-module.ts` files:
+
+```typescript title="graphql/User.graphql-module.ts"
+export default {
+  typeDefs: /* GraphQL */ `
+    type Query {
+      saySomething: String
+    }
+  `,
+  resolvers: {
+    Query: {
+      saySomething: () => "Hi!",
+    },
+  },
+};
 ```
 
 ## Resolvers
@@ -54,14 +165,14 @@ The function `postAdd` gets transformed to an array of functions:
 A more concrete example:
 
 ```typescript
-import { execute } from "@kaviar/executor";
+import { execute } from "@kaviar/graphql-bundle";
 
 load({
   typeDefs,
   resolvers: {
     Query: execute({
       PostAdd: [
-        async function(_, args, ctx) {
+        async function (_, args, ctx) {
           const postService = ctx.container.get(PostService);
           return postService.addPost(args.post);
         },
@@ -88,7 +199,7 @@ interface ICheckLoggedInConfig {
   errorMessage?: string;
 }
 
-const CheckLoggedIn = async function(options: ICheckLoggedInConfig) {
+const CheckLoggedIn = async function (options: ICheckLoggedInConfig) {
   if (options.errorMessage) {
     options.errorMessage = "User not authorized";
   }
@@ -137,7 +248,7 @@ load({
 ```
 
 ```typescript
-import { getResult } from "@kaviar/executor";
+import { getResult } from "@kaviar/graphql-bundle";
 
 const ManipulateEndResponse = () => {
   return async function ManipulateEndResponse(_, args, ctx) {
@@ -158,7 +269,7 @@ const ManipulateEndResponse = () => {
 When you're creating logic you're most likely want to reuse it, this is why we introduce bundling plugins:
 
 ```typescript
-import { group } from "@kaviar/executor";
+import { group } from "@kaviar/graphql-bundle";
 
 load({
   typeDefs,
