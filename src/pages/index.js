@@ -69,10 +69,7 @@ function Home() {
           </p>
           <div className={styles.buttons}>
             <Link
-              className={classnames(
-                "button button--outline button--lg",
-                styles.getStarted
-              )}
+              className="button button--outline button--lg"
               to={useBaseUrl("docs/")}
             >
               Get Started

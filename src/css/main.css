@@ -36,6 +36,10 @@
   border-radius: 15px;
 }
 
+/* for some reason it doesn't work ok */
+.button--outline {
+  border: 1px solid #fff;
+}
 .docusaurus-highlight-code-line {
   background-color: rgb(72, 77, 91);
   display: block;
