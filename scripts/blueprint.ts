@@ -28,10 +28,6 @@ export const map: IElementMap = {
       title: "Introduction",
     },
     {
-      id: "framework-learning-curve",
-      title: "Learning Curve",
-    },
-    {
       id: "framework-roadmap",
       title: "Roadmap",
     },
@@ -137,21 +133,25 @@ export const map: IElementMap = {
       title: "Introduction",
     },
     {
+      id: "x-way-conventions",
+      title: "Conventions",
+    },
+    {
       id: "x-bundle",
       title: "X-Bundle",
       package: "x-bundle",
       typeDocs: true,
     },
     {
-      id: "x-password-bundle",
-      title: "Passwords",
-      package: "x-password-bundle",
-      typeDocs: true,
-    },
-    {
       id: "x-generator-bundle",
       title: "Command-line",
       package: "x-generator-bundle",
+      typeDocs: true,
+    },
+    {
+      id: "x-password-bundle",
+      title: "Passwords",
+      package: "x-password-bundle",
       typeDocs: true,
     },
   ],

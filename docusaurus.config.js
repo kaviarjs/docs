@@ -51,8 +51,13 @@ module.exports = {
           position: "right",
         },
         {
-          href: "https://github.com/kaviarjs/docs",
+          href: "https://github.com/kaviarjs/kaviar",
           label: "GitHub",
+          position: "right",
+        },
+        {
+          href: "https://forms.gle/DTMg5Urgqey9QqLFA",
+          label: "Feedback",
           position: "right",
         },
       ],
@@ -96,6 +101,10 @@ module.exports = {
             {
               label: "Newsletter",
               href: "http://eepurl.com/hcoxCj",
+            },
+            {
+              label: "Feedback",
+              href: "https://forms.gle/DTMg5Urgqey9QqLFA",
             },
           ],
         },

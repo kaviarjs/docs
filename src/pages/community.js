@@ -7,7 +7,12 @@ import useBaseUrl from "@docusaurus/useBaseUrl";
 import styles from "./styles.module.css";
 import { SubscribeToNewsletter } from "../components/SubscribeToNewsletter";
 import { Feature } from "../components/Feature";
-import { IoIosBulb, IoIosGitBranch, IoIosFlower } from "react-icons/io";
+import {
+  IoIosBulb,
+  IoIosGitBranch,
+  IoIosFlower,
+  IoLogoReddit,
+} from "react-icons/io";
 
 const features = [
   {
@@ -15,25 +20,22 @@ const features = [
     icon: <IoIosBulb />,
     description: (
       <>
-        Every framework should be open to be shaped by the community, and we
-        shape the future by the courage of our questions... and the depth of our
-        answers. We chose{" "}
+        Every framework should be open to be shaped by the community. We chose{" "}
         <a href="https://www.reddit.com/r/KaviarJS" target="_blank">
-          Reddit
+          Reddit <IoLogoReddit />
         </a>{" "}
         as the perfect platform for us to challenge and decide on ideas.
       </>
     ),
   },
   {
-    title: <>Open-source is for the Soul</>,
+    title: <>Open-source is for the soul</>,
     icon: <IoIosFlower />,
     description: (
       <>
-        Working at a company's project, that's for money. Working open-source
-        that's for your programmer soul. Join us in our adventure, contribute to
-        open-source, evolve as a human being and coder. Lots of companies
-        recognise open-source developers as very valuable assets.
+        Join us in our adventure, contribute to open-source, evolve as a human
+        being and coder and skyrocket your career. Most companies appreciate
+        involvement to open-source, it can skyrocket your career.
       </>
     ),
   },
@@ -70,6 +72,18 @@ function Community() {
             one rule — we are <strong>excellent</strong> to each together.
             <br />
           </p>
+          <div>
+            <a
+              className={classnames(
+                "button button--outline button--lg",
+                styles.getStarted
+              )}
+              href="https://www.reddit.com/r/KaviarJS/"
+              target="_blank"
+            >
+              Join Us
+            </a>
+          </div>
         </div>
       </header>
       <main>

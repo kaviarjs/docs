@@ -17,7 +17,7 @@ Q4 - 2020
   - Create a plug-in solution for X-way
 - Create a video docuseries for Kaviar and X-way
 - Complete the test suites for all packages belonging to Kaviar
-- Facebook/Google/Twitter Solutions
+- Facebook/Google/Twitter Authentication Solutions
 
 Q1 - 2021
 

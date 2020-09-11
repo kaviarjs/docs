@@ -18,6 +18,24 @@
   font-size: 14px;
 }
 
+.text-highlight {
+  /* font-weight: bold; */
+  display: inline-block;
+  text-decoration: underline;
+  text-decoration-color: #ddd;
+}
+
+.text-highlight-strong {
+  text-decoration: none;
+  color: #fff;
+  background: var(--ifm-color-primary);
+  /* background: var(--ifm-color-primary); */
+  display: inline-block;
+  padding-left: 7px;
+  padding-right: 7px;
+  border-radius: 15px;
+}
+
 .docusaurus-highlight-code-line {
   background-color: rgb(72, 77, 91);
   display: block;

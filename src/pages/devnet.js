@@ -7,37 +7,52 @@ import useBaseUrl from "@docusaurus/useBaseUrl";
 import styles from "./styles.module.css";
 import { SubscribeToNewsletter } from "../components/SubscribeToNewsletter";
 import { Feature } from "../components/Feature";
+import { IoMdHand, IoIosCode, IoMdPeople } from "react-icons/io";
 
 const features = [
   {
     title: <>Project Consulting</>,
-    // imageUrl: "img/undraw_docusaurus_mountain.svg",
+    icon: <IoMdHand />,
     description: (
       <>
-        Talk with the creator of Kaviar (Theodor) and scheudule a meeting
-        directly with him.
+        Talk with the creator of KaviarJS (Theodor) and scheudule a meeting
+        directly with him. Send us an email at{" "}
+        <a href="mailto:theo@kaviarjs.com">theo@kaviarjs.com</a>. If you are
+        looking for a full team, you can send us a request{" "}
+        <a href="https://forms.gle/fL8wp8bgk6QmfotS9" target="_blank">
+          here
+        </a>
+        .
       </>
     ),
   },
   {
     title: <>Apply as a Developer</>,
-    // imageUrl: "img/undraw_docusaurus_tree.svg",
+    icon: <IoIosCode />,
     description: (
       <>
-        After you have learned the basics of Kaviar, you can apply to register
-        as a certified Kaviar developer.
+        Are you a passionate developer that loves web development? Feel free to
+        apply to our network using this{" "}
+        <a href="https://forms.gle/fL8wp8bgk6QmfotS9" target="_blank">
+          quick form
+        </a>
+        . You are going to join our exclusive club and receive offers and work
+        with like-minded people.
       </>
     ),
   },
   {
     title: <>Build your Team.</>,
-    // imageUrl: "img/undraw_docusaurus_react.svg",
+    icon: <IoMdPeople />,
     description: (
       <>
         Work with us to find the perfect team for your project. We have
-        resources for: Backend Development (Kaviar), Frontend Development
-        (React), Project Management &and; Audit, Quality Assurance, Developers,
-        Designers fit for your project.
+        resources for: Backend, Frontend, Management &amp; Audit, QA, Designers
+        fit for <strong>your project</strong>.{" "}
+        <a href="https://forms.gle/UP7sZeVtQxicr6iPA" target="_blank">
+          Apply here
+        </a>{" "}
+        for a request and we will match you with the perfect team.
       </>
     ),
   },

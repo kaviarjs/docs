@@ -10,6 +10,7 @@ import TabItem from "@theme/TabItem";
 import { SubscribeToNewsletter } from "../components/SubscribeToNewsletter";
 import { IoIosApps, IoIosFlash, IoIosFlower } from "react-icons/io";
 import { Feature } from "../components/Feature";
+import { TextHighlight } from "../components/TextHighlight";
 
 const features = [
   {
@@ -19,19 +20,21 @@ const features = [
     description: (
       <>
         TypeScript brings order to chaos. Kaviar brings order to your modules.
-        Writing co-operative, independent modules has never been easier.
+        Writing co-operative, independent modules has never been easier. Enjoy
+        the power of writing decoupled code.
       </>
     ),
   },
   {
-    title: <>Rapid development. No joke.</>,
+    title: <>Speed meets development</>,
     icon: <IoIosFlash />,
     // imageUrl: "img/undraw_docusaurus_react.svg",
     description: (
       <>
-        Using the <Link to="/docs/x-way-introduction">X-way</Link> from Kaviar,
-        you can generate from command-line your favorite elements which
-        accelerate prototyping of apps and bring back enjoyment to coding.
+        Using <Link to="/docs/x-way-introduction">X-way</Link> from Kaviar, you
+        can generate from command-line your favorite elements which accelerate
+        prototyping of apps and bring back enjoyment to coding, allowing you to
+        focus on things that matter.
       </>
     ),
   },
@@ -41,10 +44,9 @@ const features = [
     // imageUrl: "img/undraw_docusaurus_react.svg",
     description: (
       <>
-        We believe that if you were to choose a framework, you should chose one
-        that will last the test of time. Kaviar packages have the current LTS
-        support until December 2026. So you are safe to build your business with
-        us.
+        If you choose a framework, you should chose one that will pass the test
+        of time. Kaviar packages have the current LTS support until December
+        2026. So you are safe to build your business with us.
       </>
     ),
   },
@@ -102,47 +104,81 @@ function Home() {
           ]}
         >
           <TabItem value="developers">
-            As a developer with experience you are tired of reinventing the
-            wheel and you want a framework that can support you in decoupling
-            your code, making it re-usable and at the same time having it clean
-            and done within schedule.
+            As a <TextHighlight>fresh developer</TextHighlight>, you don't want
+            to spend time on configurations, you want to{" "}
+            <TextHighlight strong>see things working fast</TextHighlight>
+            or you might get discouraged. As a{" "}
+            <TextHighlight>developer with experience</TextHighlight>, you are
+            tired of reinventing the wheel and you want a framework that can
+            support you in decoupling your code, making it re-usable and at the
+            same time having it clean and done within schedule.
             <br />
             <br />
-            Kaviar framework is support tool for you to allow your creativity to
-            flourish. We have lots of things planned to make our developer's
-            life easier. So make sure you subscribe to the newsletter.
+            Kaviar framework is support tool for you to{" "}
+            <TextHighlight strong>
+              allow your creativity to flourish
+            </TextHighlight>
+            . We have lots of things planned to make our developer's life
+            easier. So make sure you{" "}
+            <a href="http://eepurl.com/hcoxCj" target="_blank">
+              subscribe to our newsletter
+            </a>
+            .
+            <br />
+            <br />
+            As a <TextHighlight>frontend developer</TextHighlight> you can
+            easily create your data models for the backend in no-time and focus
+            on your nice component parts.
           </TabItem>
           <TabItem value="entrepreneurs">
             Whether you are starting a company or looking to digitalise yours,
             it's gonna be a challenge, we guarantee. You will be battling with
             sharks and the best weapon at your disposal is delivering fast or
-            your competition is going to take the cake.
+            your competition is going to take the cake.{" "}
+            <TextHighlight>Don't let them.</TextHighlight>
             <br />
             <br />
-            Kaviar is a framework designed to <strong>deliver fast</strong>, it
-            is designed to aid you or your team by providing standards,
-            conventions, the basic things already built, so you can focus on
-            your progress.
+            KaviarJS is a framework{" "}
+            <TextHighlight>designed to deliver fast</TextHighlight>, it is
+            designed to aid you or your team by providing standards,
+            conventions, the basic things already built, so you can{" "}
+            <TextHighlight strong>focus on your business</TextHighlight>.
             <br />
             <br />
-            Did we mention it's fast? Don't belive us. Try it yourself and make
-            sure you subscribe to our newsletter.
+            Besides the framework we also have a strong{" "}
+            <a href={useBaseUrl("devnet/")}>Developer Network</a> (coined
+            DevNet) that can help you scale the team in snap.{" "}
+            <a href={useBaseUrl("devnet/")}>Find out more here.</a>
+            <br />
+            <br />
+            Did we mention it's fast? Don't belive us. Talk with your CTO or
+            hire one from our DevNet, and whatever you do, be sure to{" "}
+            <a href="http://eepurl.com/hcoxCj" target="_blank">
+              subscribe to our newsletter
+            </a>
+            .
           </TabItem>
           <TabItem value="pms">
             The success of a project manager is measured by two key metrics:
-            delivery and team satisfaction. To master both it is an art that may
-            take decades. Kaviar is going to be your friend because it helps
-            your most critical KPIs.
+            <TextHighlight strong>delivery and team satisfaction</TextHighlight>
+            . To master both it is an art that may take decades. Kaviar is going
+            to be your friend because it helps your most critical KPIs.
             <br />
             <br />
-            Being designed for fast delivery, your sprints will be finished in
-            time and containing a well-structured and organised documentation
-            and set of conventions, your developer will be more than happy to
-            work on it, improving on the satisfaction metric.
+            Being <TextHighlight>designed for fast delivery</TextHighlight>,
+            your sprints will be finished in time and containing a
+            well-structured and organised documentation and set of conventions,
+            your developer will be more than happy to work on it, improving on
+            the satisfaction metric.
             <br />
             <br />
             Do yourself a favor, and recommend Kaviar to whoever makes decisions
-            regarding technology and be sure to subscribe to our newsletter.
+            regarding technology and be sure to{" "}
+            <a href="http://eepurl.com/hcoxCj" target="_blank">
+              subscribe to our newsletter
+            </a>
+            . You know it's{" "}
+            <TextHighlight>important to stay informed</TextHighlight>.
           </TabItem>
         </Tabs>
       </main>

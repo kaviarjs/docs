@@ -19,18 +19,24 @@ It does automatic type and resolver merging and you can also load context manipu
 ## Install
 
 ```
-npm install --save @kaviar/loader
+npm install --save @kaviar/graphql-bundle
+```
+
+Register it easily:
+
+```ts
+kernel.addBundle(new GraphQLBundle());
 ```
 
 ## Usage
 
-```js
+```typescript
 import { Loader } from "@kaviar/graphql-bundle";
 
 // Without Kaviar Bundles
 const loader = new Loader();
 // Or inside prepare() phase of your Bundle
-const loader = container.get < Loader > Loader;
+const loader = container.get<Loader>(Loader);
 
 loader.load({
   // Can also be array of strings
@@ -67,7 +73,7 @@ loader.load({
 
 This would happen when you want to instantiate your server
 
-```js
+```typescript
 const {
   typeDefs,
   resolvers,
