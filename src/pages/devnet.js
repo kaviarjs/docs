@@ -18,9 +18,9 @@ const features = [
         Talk with the creator of KaviarJS (Theodor) and scheudule a meeting
         directly with him. Send us an email at{" "}
         <a href="mailto:theo@kaviarjs.com">theo@kaviarjs.com</a>. If you are
-        looking for a full team, you can send us a request{" "}
-        <a href="https://forms.gle/fL8wp8bgk6QmfotS9" target="_blank">
-          here
+        looking for a full team, you can{" "}
+        <a href="https://forms.gle/UP7sZeVtQxicr6iPA" target="_blank">
+          send us a request here
         </a>
         .
       </>

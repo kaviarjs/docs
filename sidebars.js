@@ -42,8 +42,8 @@ module.exports = {
         "x-way-introduction",
         "x-way-conventions",
         "package-x-bundle",
-        "package-x-password-bundle",
-        "package-x-generator-bundle"
+        "package-x-generator-bundle",
+        "package-x-password-bundle"
     ]
 }
 }

@@ -9,7 +9,7 @@ import { PackageHeader } from "@site/src/components/PackageHeader";
 
 The X-way is a set of tools that beautifully bridges the gap between your API Layer (GraphQL), your database (MongoDB), and your service layer. It is thought with fast-prototyping in mind but code scalability as well.
 
-It has the following tools
+It has the following tools:
 
 - Apollo Server Executors (CRUD Operations, Security Checks, Service Delegation)
 - Apollo Server Scalars (Date, ObjectId)
@@ -20,6 +20,30 @@ The family of X-way bundles is currently composed of:
 
 - X-Generator which uses Kaviar's Terminal Technology to develop applications fast.
 - X-Password-Bundle which links Security, Mongo, Apollo to create a unified experience
+
+## Install
+
+```
+npm i @kaviar/x-bundle
+```
+
+```ts title="kernel.ts"
+import { XBundle } from "@kaviar/x-bundle";
+
+const kernel = new Kernel({
+  bundles: [
+    new XBundle({
+      // You should take these from environment, the reason we ask them is for easy routing
+      // However, they are optional.
+
+      // The URL of the application, your website (helpful for other bundles in the X-way ecosystem)
+      appUrl: "http://localhost:3000",
+      // The URL of the API endpoint
+      rootUrl: "http://localhost:4000",
+    }),
+  ],
+});
+```
 
 ## Executors
 
@@ -33,9 +57,9 @@ We use MongoDB Nova for fetching relational data. The Nova package has a way to 
 import * as X from "@kaviar/x-bundle";
 
 export default {
-  Query: execute({
+  Query: {
     doSomething: [X.ToNova(CollectionClass)],
-  }),
+  },
 };
 ```
 

@@ -7,7 +7,7 @@ import { PackageHeader } from "@site/src/components/PackageHeader";
 
 <PackageHeader version="1.0.0" packageName="email-bundle" containsTypeDefs />
 
-This bundle helps you connect to your favorite (swapable) transporter and render react templates as email. It is thought to work with typescript and enjoy type-safety.
+This bundle helps you connect to your favorite (swapable) transporter and render React templates as email. It is thought to work with TypeScript and enjoy type-safety.
 
 ## Installation
 
@@ -20,49 +20,32 @@ npm install @kaviar/email-bundle react react-dom
 ```typescript
 new KaviarEmailBundle(config);
 
-// The config interface:
+// The config interface
+:
 export interface IEmailBundleConfig {
-  transporter?:
-    | Transport
-    | {
-        host: string;
-        port: number;
-        secure?: boolean;
-        auth?: {
-          user: string;
-          pass: string;
-        };
+  /**
+   * If you don't pass a transporter, a test transporter will be created
+   * and emails will be easily viewed online in a web page.
+   * Or you may want to inject a custom transporter later on from your bundles.
+   */
+  transporter?: {
+      host: string;
+      port: number;
+      secure?: boolean;
+      auth?: {
+        user: string;
+        pass: string;
       };
-  defaults: IEmailBundleConfigDefaults;
-}
-
-// Ability to override
-export interface IEmailBundleConfigDefaults {
-  // Default is: "KAVIAR" <no-reply@kaviarjs.org>
-  from?: string;
-
-  // Properties that will always reach any email
-  // For example you may want to store here the Application's BASE URL
-  props?: object;
+    };
+  defaults: {
+    from?: string;
+    /**
+     * Inject global properties
+     */
+    props?: any;
+  };
 }
 ```
-
-In most cases you would simply use it by connecting to your SMTP provider:
-
-```typescript
-new KaviarEmailBundle({
-  transport: {
-    host: "xxx",
-    port: 25,
-    auth: {
-      user: "xxx",
-      pass: "***",
-    },
-  },
-});
-```
-
-If you leave it blank, it will default to an ethereal test account, and it will let you view the email on the web.
 
 You can use it by either providing your own custom transport, you can customise this heavily.
 
@@ -88,6 +71,8 @@ And if you want to have a registered, service-dependency container that creates 
 
 ## Usage
 
+Let's create an email template:
+
 ```typescript
 // https://nodemailer.com/about/
 const emailService = this.get<EmailService>(EmailService);
@@ -97,24 +82,33 @@ export interface IWelcomeEmailProps {
 }
 
 // To send your email is easy
-export const WelcomeEmail = (props: IWelcomeEmailProps) => {
+export const WelcomeEmail: IReactEmailTemplate<IWelcomeEmailProps> = (
+  props
+) => {
   return <div>Hello {props.name}</div>;
 };
 
-WelcomeEmail.subject = (props: IWelcomeEmailProps) => `Hello ${props.name}`;
+// Subject is most of the time very tied to the email template
+// You can omit this if you are sending the "subject" in the message configuration
+WelcomeEmail.subject = (props) => `Hello ${props.name}`;
+```
 
-// The send argument IWelcomeEmailProps is optional, but it does help you ensure props is correctly sent
+Now let's try to send an email:
+
+```typescript
+// The send argument IWelcomeEmailProps is optional, but it does help you ensure the props is correctly sent
 await emailService.send<IWelcomeEmailProps>(
   // Template options
   {
-    component: MyEmailTemplate,
+    component: WelcomeEmail,
     props: {
       name: "Theodor",
     },
   },
+  // This argument represents the message configuration
+  // Explore more about it here: https://nodemailer.com/message/
   {
     to: "someone@somewhere.com",
-    from: "theo@kaviarjs.org", // optional, most likely you will miss and let it be the default one
   }
 );
 ```
@@ -164,8 +158,11 @@ class EmailListener extends Listener {
 And you can have a sort of "master" interface for these global props:
 
 ```ts
-export interface IGlobalEmailProps {
-  appUrl: string;
+// Example. This will be accessible from all React email templates, as long with their defined properties.
+declare module "@kaviar/email-bundle" {
+  export interface IGlobalEmailProps {
+    appUrl: "https://abc.com";
+  }
 }
 
 export interface IWelcomeEmailProps {

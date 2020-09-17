@@ -157,14 +157,14 @@ The function `postAdd` gets transformed to an array of functions:
 
 ```ts
 {
-  Mutation: execute({
+  Mutation: {
     PostAdd: [
       // Now you can chain functions which are executed in the order here
       (_, args, ctx) => {
         // do things
       },
     ],
-  });
+  };
 }
 ```
 
@@ -176,7 +176,7 @@ import { execute } from "@kaviar/graphql-bundle";
 load({
   typeDefs,
   resolvers: {
-    Query: execute({
+    Query: {
       PostAdd: [
         async function (_, args, ctx) {
           const postService = ctx.container.get(PostService);
@@ -189,7 +189,7 @@ load({
         CheckPostRights("postId"),
         async (_, args, ctx) => {},
       ],
-    }),
+    },
   },
 });
 ```
@@ -222,14 +222,14 @@ const CheckLoggedIn = async function (options: ICheckLoggedInConfig) {
 
 ```typescript
 export default {
-  Query: execute({
+  Query: {
     PostAdd: [
       CheckLoggedIn({ errorMessage: "Not allowed to add post" }),
       async (_, args, ctx) => {
         // Add the post as no exception was thrown
       },
     ],
-  }),
+  },
 };
 ```
 
@@ -246,9 +246,9 @@ load({
     }
   `,
   resolvers: {
-    Query: execute({
+    Query: {
       Something: [() => "something", ManipulateEndResponse()],
-    }),
+    },
   },
 });
 ```
@@ -275,12 +275,10 @@ const ManipulateEndResponse = () => {
 When you're creating logic you're most likely want to reuse it, this is why we introduce bundling plugins:
 
 ```typescript
-import { group } from "@kaviar/graphql-bundle";
-
 load({
   typeDefs,
   resolvers: {
-    Query: group(
+    Query: [
       // BEFORE PLUGINS
       [CheckLoggedIn()],
 
@@ -300,8 +298,8 @@ load({
       },
 
       // AFTER
-      [ManipulateEndResponse()]
-    ),
+      [ManipulateEndResponse()],
+    ],
   },
 });
 ```

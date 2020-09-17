@@ -4,7 +4,7 @@ import classnames from "classnames";
 export function SubscribeToNewsletter() {
   return (
     <main className="newsletter-container">
-      <h1>We're moving fast. Keep the pace with us.</h1>
+      <h1>We're moving fast, want to keep up?</h1>
       <a
         className={classnames(
           "button button--primary button--lg signup-button"
@@ -15,9 +15,7 @@ export function SubscribeToNewsletter() {
         Subscribe to our newsletter
       </a>
 
-      <p className="no-spam">
-        (we won't spam, <span className="pinky">pinky</span> promise)
-      </p>
+      <p className="no-spam">(only the essential updates)</p>
     </main>
   );
 }

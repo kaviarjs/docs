@@ -35,7 +35,9 @@ const features = [
       <>
         Join us in our adventure, contribute to open-source, evolve as a human
         being and coder and skyrocket your career. Most companies appreciate
-        involvement to open-source, it can skyrocket your career.
+        involvement to open-source,{" "}
+        <a href="https://www.reddit.com/r/KaviarJS">join our community</a> and
+        get involved. Let your GitHub account speak for itself.
       </>
     ),
   },
