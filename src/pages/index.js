@@ -110,6 +110,10 @@ function Home() {
             support you in decoupling your code, making it re-usable and at the
             same time having it clean and done within schedule.
             <br />
+            As a <TextHighlight>frontend developer</TextHighlight> you can
+            easily create your data models for the backend in no-time and focus
+            on your nice component parts.
+            <br />
             <br />
             Kaviar framework is support tool for you to{" "}
             <TextHighlight strong>
@@ -123,9 +127,6 @@ function Home() {
             .
             <br />
             <br />
-            As a <TextHighlight>frontend developer</TextHighlight> you can
-            easily create your data models for the backend in no-time and focus
-            on your nice component parts.
           </TabItem>
           <TabItem value="entrepreneurs">
             Whether you are starting a company or looking to digitalise yours,
