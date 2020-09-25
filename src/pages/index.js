@@ -60,6 +60,12 @@ function Home() {
       title={`Home`}
       description="KaviarJS is a framework with rapid development in mind without the sacrifice of quality."
     >
+      <div className="experimental-mode-warning">
+        <strong>Warning!</strong>
+        <br />
+        KaviarJS is currently in experimental stage. The first stable release is
+        going to be on 15th November 2020.
+      </div>
       <header className={classnames("hero hero--primary", styles.heroBanner)}>
         <div className="container">
           <embed src="/img/logo-orange.svg" height="100px" alt="Kaviar Logo" />

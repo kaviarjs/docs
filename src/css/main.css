@@ -18,6 +18,14 @@
   font-size: 14px;
 }
 
+.experimental-mode-warning {
+  background: red;
+  color: #fff;
+  padding: 10px 5px;
+  text-align: center;
+  font-size: 1.2em;
+}
+
 .text-highlight {
   /* font-weight: bold; */
   display: inline-block;
