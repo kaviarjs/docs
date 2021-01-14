@@ -5,7 +5,7 @@ title: Roadmap
 
 Kaviar vision is <strong>bold</strong> and long-term. We want to accelerate the web development process by providing rock-solid well-tested solutions for the most common needs and allowing developers to concentrate on things that matter and cannot yet be automated.
 
-Q4 - 2020
+Q1 - 2021
 
 - Cross the territory to frontend and quick admin generators
   - Include ability to generate typescript definitions from schema
@@ -19,7 +19,7 @@ Q4 - 2020
 - Complete the test suites for all packages belonging to Kaviar
 - Facebook/Google/Twitter Authentication Solutions
 
-Q1 - 2021
+Q2 - 2021
 
 - Ability to generate large codebase boilerplates from a configurable web interface/json file
 - Deployment automation scripts
