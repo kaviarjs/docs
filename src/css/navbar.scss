@@ -1,0 +1,27 @@
+.navbar {
+  .navbar__inner {
+    .navbar__items {
+      // background: pink;
+    }
+    .navbar__item {
+      background: rgb(29, 255, 161);
+      // font-size: 1.2em;
+      font-weight: 300;
+      // color: #fff;
+      margin-right: 15px;
+      padding: 9px 15px;
+      line-height: 1em;
+      border-radius: $radius;
+      &:hover {
+        color: #000;
+      }
+      &.navbar__link {
+        &--active {
+          background: red;
+          color: #fff;
+          font-weight: 400;
+        }
+      }
+    }
+  }
+}

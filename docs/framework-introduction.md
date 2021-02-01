@@ -1,29 +1,48 @@
 ---
 id: framework-introduction
-title: Welcome
+title: Introduction
 slug: /
 ---
 
-## What is KaviarJS?
+## What is Kaviar?
 
-KaviarJS is a TypeScript-based framework which aims at helping developers create robust web applications <strong>in a speedy fashion</strong>, with modules that are <strong>reusable</strong> across other apps. In order to do this we had to address the status-quo and we had to innovate and change the old way of how the things were done.
+KaviarJS is a TypeScript-based framework which aims at helping developers create robust web applications <strong>in a speedy fashion</strong>. Features cool stuff such as:
 
-There are two parts of the story. (1) Kaviar Framework which consists of the building blocks of architecting your application, the other part, (2) which will be refered to as <strong>X-way</strong>, containing opinionated implementations of the Kaviar Framework to solve application development in a speedy fashion.
+- Built-in Security Module compatible with any database
+- Modular Design with Dependency Injection
+- React Templated Email Support
+- Supports running commands from your cli in your application context
+- Customisable GraphQL Features
+- Complex, yet simple Model Validation
+- Customisable Logging
 
-We strongly recommend that you read the main principles and sections of the framework before diving into the opinionated territory.
+KaviarJS is flexible and does not dictate what database or API should you use. It's flexible to adapt to any needs and provides you with a solid foundation for your project. On top of this solid base, we built X-framework. All open-source.
 
-## Solutions
+## X-Framework
 
-The most notable solutions that Kaviar Framework comes with, are:
+This represents a set of bundles (modules) built with Kaviar which make use of:
 
-1. Module Orchestration. Run your application composed of several modules that can talk with each other and modify their behavior.
-2. Security. How do we implement a security standard that doesn't care about the database you use and allows other modules to use it
-3. GraphQL tooling: modules for easily integrating GraphQL API with your business logic.
+- GraphQL (Apollo/Serverless)
+- MongoDB
 
-## Documentation
+Main features of it are:
 
-The documentation has all the family of packages of Kaviar inside it. Each package belongs in its own repository and we have a master repository of git submodules that allows us to link everything.
+- Intelligent and adaptive scaffolding tool (@kaviar/x)
+- Plug-in Secure User Management (register/login/reset password, etc)
+- Out of the box realtime features
+- Type-safe MongoDB with relational features.
+- GraphQL tools (authorisation, live data, dependency injection, security)
 
-## Support Us
+## Learning Curve
 
-If you enjoy Kaviar and want to see it shine, consider giving us a GitHub star on https://github.com/kaviarjs/kaviar. It helps other people find easier about it. And if we're not worthy of your star, tell us what we need to do to get it by <a href="https://www.reddit.com/r/KaviarJS" target="_blank">posting here</a>.
+It's a great idea to know both JavaScript and TypeScript. But don't feel bad if you haven't ascended yet to godhood (TypeScript), you're a developer you can learn it as you go! It's important that your JavaScript basics are there so you can easily follow through. Besides JS Basics, we recommend you understand the following concepts.
+
+- OOP in JavaScript
+- Observer Pattern
+- Promises
+
+We also recommend you use Prettier as your default code formatting tool, this will help you keep your code looking clean without having to think about it.
+
+## Support
+
+This package is part of [KaviarJS](https://www.kaviarjs.com) family. If you enjoy this work please show your support by starring [the main package](https://github.com/kaviarjs/kaviar). If not, let us know what can we do to deserve it, [our feedback form is here](https://forms.gle/DTMg5Urgqey9QqLFA)

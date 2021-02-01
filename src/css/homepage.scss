@@ -1,0 +1,93 @@
+.homepage {
+  text-align: center;
+  embed {
+    height: 150px;
+  }
+  .hero__subtitle {
+    padding-left: 20px;
+    font-size: 3rem;
+    font-weight: 200;
+  }
+  .magicians {
+    font-weight: 300;
+  }
+}
+
+.feature-element {
+  text-align: center;
+  .feature-header {
+    background: lighten(red, 10%);
+    color: #fff;
+    padding: 16px;
+  }
+  .feature-description {
+    background: red;
+    color: #fff;
+    padding: 16px;
+  }
+  .icon {
+    color: $contrastColor;
+    font-size: 3.2rem;
+    // background: red;
+  }
+}
+.feature-element .feature-element .icon:hover {
+  color: var(--ifm-color-primary);
+}
+
+.explained-container {
+  text-align: center;
+  padding: 60px 0;
+  border-top: 16px solid red;
+
+  h1 {
+    margin-bottom: 25px;
+  }
+
+  .tabs {
+    max-width: 800px;
+    margin: 0 auto;
+    align-items: center;
+
+    justify-content: center;
+  }
+
+  div[role="tabpanel"] {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 25px;
+  }
+}
+
+.newsletter-container {
+  padding: 60px 30px;
+  text-align: center;
+  border-top: 6px solid red;
+}
+
+.newsletter-container .signup-button {
+  margin-top: 20px;
+}
+
+.newsletter-container .pinky {
+  font-weight: bold;
+}
+
+.newsletter-container .no-spam {
+  color: #666;
+}
+
+.just-go {
+  text-align: center;
+  padding: 60px 30px;
+  text-align: center;
+  .start-code {
+    text-align: left;
+    margin: 0 auto;
+    width: 400px;
+    background: #000;
+    color: #fff;
+    padding: 25px;
+    border-radius: $radius;
+  }
+}

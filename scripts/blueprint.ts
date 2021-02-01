@@ -22,7 +22,7 @@ export interface IElementMap {
 }
 
 export const map: IElementMap = {
-  Introduction: [
+  Meta: [
     {
       id: "framework-introduction",
       title: "Introduction",
@@ -32,7 +32,7 @@ export const map: IElementMap = {
       title: "Roadmap",
     },
   ],
-  Framework: [
+  Foundation: [
     {
       id: "core",
       title: "Core",
@@ -127,19 +127,25 @@ export const map: IElementMap = {
       typeDocs: true,
     },
   ],
-  "X-way": [
+  "X-Framework": [
     {
-      id: "x-way-introduction",
+      id: "x-framework-introduction",
       title: "Introduction",
     },
     {
-      id: "x-way-conventions",
+      id: "x-framework-conventions",
       title: "Conventions",
     },
     {
       id: "x-bundle",
       title: "X-Bundle",
       package: "x-bundle",
+      typeDocs: true,
+    },
+    {
+      id: "x-ui",
+      title: "User Interface",
+      package: "x-ui",
       typeDocs: true,
     },
     {

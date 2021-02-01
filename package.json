@@ -9,12 +9,12 @@
     "deploy": "docusaurus deploy"
   },
   "dependencies": {
-    "@docusaurus/core": "^2.0.0-alpha.61",
-    "@docusaurus/preset-classic": "^2.0.0-alpha.61",
+    "@docusaurus/core": "^2.0.0-alpha.70",
+    "@docusaurus/preset-classic": "^2.0.0-alpha.70",
     "classnames": "^2.2.6",
-    "docusaurus-plugin-sass": "^0.1.9",
-    "react": "^16.8.4",
-    "react-dom": "^16.8.4",
+    "docusaurus-plugin-sass": "^0.1.11",
+    "react": "^16.14.0",
+    "react-dom": "^16.14.0",
     "react-icons": "^3.11.0"
   },
   "browserslist": {
@@ -30,6 +30,6 @@
     ]
   },
   "devDependencies": {
-    "fs-extra": "^9.0.1"
+    "fs-extra": "^9.1.0"
   }
 }

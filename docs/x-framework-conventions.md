@@ -1,5 +1,5 @@
 ---
-id: x-way-conventions
+id: x-framework-conventions
 title: Conventions
 ---
 

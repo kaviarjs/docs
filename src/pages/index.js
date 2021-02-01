@@ -14,39 +14,43 @@ import { TextHighlight } from "../components/TextHighlight";
 
 const features = [
   {
-    title: <>Go Modular. Save time.</>,
+    title: <>Technology Stack</>,
     icon: <IoIosApps />,
     // imageUrl: "img/undraw_docusaurus_mountain.svg",
     description: (
       <>
-        TypeScript brings order to chaos. Kaviar brings order to your modules.
-        Writing co-operative, independent modules has never been easier. Enjoy
-        the power of writing decoupled code.
+        We are harnessing the power of <strong>TypeScript</strong> in{" "}
+        <strong>Node</strong> and <strong>React</strong>. We have included cool
+        stuff like: Dependency Injection, Async Event Management, Built-in
+        Authentication Support and Modular Design.
       </>
     ),
   },
   {
-    title: <>Speed meets development</>,
+    title: <>The X-Framework</>,
     icon: <IoIosFlash />,
     // imageUrl: "img/undraw_docusaurus_react.svg",
     description: (
       <>
-        Using <Link to="/docs/x-way-introduction">X-way</Link> from Kaviar, you
-        can generate from command-line your favorite elements which accelerate
-        prototyping of apps and bring back enjoyment to coding, allowing you to
-        focus on things that matter.
+        Kaviar works with any database or API model, however, we go fast by
+        deciding on a stack.{" "}
+        <span style={{ display: "inline-block" }}>X-Framework</span> is built on
+        top of Kaviar allowing you to work with <strong>GraphQL</strong> and{" "}
+        <strong>MongoDB</strong>. You benefit of authentication, real time data,
+        cli generation tools and much more.
       </>
     ),
   },
   {
-    title: <>Open-source. Strongly maintained.</>,
+    title: <>Philosophy</>,
     icon: <IoIosFlower />,
     // imageUrl: "img/undraw_docusaurus_react.svg",
     description: (
       <>
-        If you choose a framework, you should chose one that will pass the test
-        of time. Kaviar packages have the current LTS support until December
-        2026. So you are safe to build your business with us.
+        We want to enable developers to move <strong>fast</strong> without
+        reinventing the wheel. Our goal is to create an elegant fullstack
+        framework that lets you rapidly develop your products with no
+        compromises.
       </>
     ),
   },
@@ -60,19 +64,21 @@ function Home() {
       title={`Home`}
       description="KaviarJS is a framework with rapid development in mind without the sacrifice of quality."
     >
-      <header className={classnames("hero hero--primary", styles.heroBanner)}>
+      <header className={classnames("homepage hero", styles.heroBanner)}>
         <div className="container">
-          <embed src="/img/logo-orange.svg" height="100px" alt="Kaviar Logo" />
+          <embed src="/img/logo.svg" height="100px" alt="Kaviar Logo" />
           <p className="hero__subtitle">
-            rapid development — zero compromises
+            The Fullstack Typescript Framework for
+            <br />
+            Web Magicians
             <br />
           </p>
           <div className={styles.buttons}>
             <Link
-              className="button button--outline button--lg"
+              className="button button--lg button--primary"
               to={useBaseUrl("docs/")}
             >
-              Get Started
+              Start
             </Link>
           </div>
         </div>
@@ -90,43 +96,25 @@ function Home() {
           </section>
         )}
       </main>
-      <main className="explained-container">
-        <h1>Explained for</h1>
+      <div className="just-go">
+        <h1>Start fast with X-Framework</h1>
+        <div className="start-code">
+          npm i -g @kaviar/x
+          <br />x
+        </div>
+      </div>
+      {/* <main className="explained-container">
+        <h1>So, what can it do?</h1>
         <Tabs
-          defaultValue="developers"
+          defaultValue="frontend"
           values={[
-            { label: "Developers", value: "developers" },
-            { label: "Entrepreneurs", value: "entrepreneurs" },
-            { label: "Project Managers", value: "pms" },
+            { label: "Frontend", value: "frontend" },
+            { label: "Mobile", value: "mobile" },
+            { label: "Backend", value: "backend" },
           ]}
         >
-          <TabItem value="developers">
-            As a <TextHighlight>fresh developer</TextHighlight>, you don't want
-            to spend time on configurations, you want to{" "}
-            <TextHighlight strong>see things working fast</TextHighlight>
-            or you might get discouraged. As a{" "}
-            <TextHighlight>developer with experience</TextHighlight>, you are
-            tired of reinventing the wheel and you want a framework that can
-            support you in decoupling your code, making it re-usable and at the
-            same time having it clean and done within schedule.
-            <br />
-            As a <TextHighlight>frontend developer</TextHighlight> you can
-            easily create your data models for the backend in no-time and focus
-            on your nice component parts.
-            <br />
-            <br />
-            Kaviar framework is support tool for you to{" "}
-            <TextHighlight strong>
-              allow your creativity to flourish
-            </TextHighlight>
-            . We have lots of things planned to make our developer's life
-            easier. So make sure you{" "}
-            <a href="http://eepurl.com/hcoxCj" target="_blank">
-              subscribe to our newsletter
-            </a>
-            .
-            <br />
-            <br />
+          <TabItem value="frontend">
+            
           </TabItem>
           <TabItem value="entrepreneurs">
             Whether you are starting a company or looking to digitalise yours,
@@ -179,7 +167,7 @@ function Home() {
             <TextHighlight>important to stay informed</TextHighlight>.
           </TabItem>
         </Tabs>
-      </main>
+      </main> */}
       <SubscribeToNewsletter />
     </Layout>
   );

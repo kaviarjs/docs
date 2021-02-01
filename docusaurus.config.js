@@ -1,13 +1,13 @@
 module.exports = {
   title: "KaviarJS",
-  tagline: "rapid development — zero compromises",
+  tagline: "fast like a prototype — scalable like enterprise",
   url: "https://www.kaviarjs.com",
   baseUrl: "/",
   favicon: "img/favicon.ico",
   organizationName: "facebook", // Usually your GitHub org/user name.
   projectName: "KAVIARJS", // Usually your repo name.
   onBrokenLinks: "warn",
-  // plugins: ["docusaurus-plugin-sass"],
+  plugins: ["docusaurus-plugin-sass"],
   themeConfig: {
     colorMode: {
       disableSwitch: true,
@@ -33,23 +33,17 @@ module.exports = {
           label: "Docs",
           position: "left",
         },
-        {
-          to: "community/",
-          activeBasePath: "community",
-          label: "Community",
-          position: "left",
-        },
-        {
-          to: "devnet/",
-          activeBasePath: "devnet",
-          label: "DevNet",
-          position: "left",
-        },
-        {
-          href: "https://www.reddit.com/r/KaviarJS",
-          label: "Reddit",
-          position: "right",
-        },
+        // {
+        //   to: "devnet/",
+        //   activeBasePath: "devnet",
+        //   label: "DevNet",
+        //   position: "left",
+        // },
+        // {
+        //   href: "https://www.reddit.com/r/KaviarJS",
+        //   label: "Reddit",
+        //   position: "right",
+        // },
         {
           href: "https://github.com/kaviarjs/kaviar",
           label: "GitHub",
@@ -57,7 +51,7 @@ module.exports = {
         },
         {
           href: "https://forms.gle/DTMg5Urgqey9QqLFA",
-          label: "Feedback",
+          label: "Give us feedback",
           position: "right",
         },
       ],
@@ -73,8 +67,8 @@ module.exports = {
               to: "docs/",
             },
             {
-              label: "X-way",
-              to: "docs/x-way-introduction",
+              label: "X-Framework",
+              to: "docs/x-framework-introduction",
             },
           ],
         },
@@ -124,7 +118,7 @@ module.exports = {
         },
         theme: {
           disableSwitch: true,
-          customCss: require.resolve("./src/css/main.css"),
+          customCss: require.resolve("./src/css/main.scss"),
         },
       },
     ],

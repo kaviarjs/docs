@@ -5,7 +5,7 @@ title: X-Bundle
 
 import { PackageHeader } from "@site/src/components/PackageHeader";
 
-<PackageHeader version="1.0.0" packageName="x-bundle" containsTypeDefs />
+<PackageHeader version="1.2.0" packageName="x-bundle" containsTypeDefs />
 
 The X-way is a set of tools that beautifully bridges the gap between your API Layer (GraphQL), your database (MongoDB), and your service layer. It is thought with fast-prototyping in mind but code scalability as well.
 
@@ -258,9 +258,15 @@ class ServiceClass {
 
 ## Scalars
 
-The only scalar we provide in this package is:
+We provide the following scalars
 
-- ObjectId
+### ObjectId
+
+This will transform the ObjectId into a string and from a string to an ObjectId from bson, compatible with MongoDB.
+
+### EJSON
+
+We will use `EJSON` as a mechanism to allow rich data to be sent, including Dates, ObjectIds, RegEx and other fine ones.
 
 What it does is pretty simple, it converts to ObjectId the strings it receives from GraphQL so it's easy for you to do searching and other cool stuff without worrying about it.
 
@@ -398,4 +404,168 @@ export default {
 };
 ```
 
-We offer a set of tools to build a powerful layer between Apollo and your Service layer. The magic and the true quality of your software product will rely in the service layer, let X-way do the rest.
+## Live Data
+
+With LiveData you can subscribe and receive notifications when things change in the MongoDB database.
+
+### Behaviors
+
+So, collections need to emit messages when a mutation (insert/update/remove) happens in the system. We do this by attaching a behavior to it.
+
+```ts
+import { Behaviors } from "@kaviar/x-bundle";
+
+class PostsCollection extends Collection {
+  behaviors: [
+    Behaviors.Live()
+  ]
+}
+```
+
+### Create a subscription
+
+Creating a subscription is like doing a Nova query. Keep in mind that reactivity is only triggered at the level of the collection.
+
+```ts
+const postsCollection = container.get(PostsCollection);
+const handle = SubscriptionStore.createSubscription(
+  postsCollection,
+  {
+    // Kaviar NOVA Query
+    $: {
+      filters: {},
+      options: {},
+    }
+    // Specify the fields needed
+    title: 1,
+  },
+  {
+    async onAdded(document) {
+      // Do something
+    },
+    async onChanged(documentId, updateSet, oldDocument) {
+      // Do something else
+    },
+    async onRemoved(documentId) {
+      // Do something else
+    },
+  }
+);
+
+handle.onStop(() => {});
+handle.stop();
+```
+
+```info
+So if you use links, and data from those links change, you will not see any changes.
+```
+
+### GraphQL
+
+A sample implementation in GraphQL.
+
+```graphql
+type Subscription {
+  users(body: EJSON): SubscriptionEvent
+}
+```
+
+```ts
+// Resolver
+const resolvers = {
+  Subscription: {
+    users: {
+      resolve: (payload) => payload,
+      subscribe(_, args, { container }, ast) {
+        const collection = container.get(collectionClass);
+        const subscriptionStore = container.get(SubscriptionStore);
+
+        subscriptionStore.createAsyncIterator(collection, args.body);
+      },
+    },
+  },
+};
+```
+
+You can additionally hook into the resolve() function and apply additional changes or data clearences before it sends the data to the client.
+
+```ts
+import { GraphQLSubscriptionEvent } from "@kaviar/x-bundle";
+
+const subscription = {
+  async resolve({ event, document }, args, { container }) {
+    if (event === GraphQLSubscriptionEvent.ADDED) {
+      // Attach information to document
+      Object.assign(document, {
+        // ...
+      });
+    }
+    // You can also apply the same concepts for example when a certain relation is changing.
+
+    return { event, document };
+  },
+  subscribe() {},
+};
+```
+
+An example of how can we notify a client that something new was added to a certain view:
+
+```ts
+import { Event } from "@kaviar/x-bundle";
+
+const subscription = {
+  resolve: (payload) => ({ event: payload.event }),
+  subscribe(_, args, { db }) {
+    const collection = container.get(collectionClass);
+    const subscriptionStore = container.get(SubscriptionStore);
+
+    return subscriptionStore.createAsyncIterator(collection, {
+      filters: args.filters,
+      options: {
+        // Note that we only subscribe by _id we only care about new things that are added
+        fields: { _id: 1 },
+      },
+    });
+  },
+};
+```
+
+You also have the ability to have a counter subscription:
+
+```graphql
+type Subscription {
+  users(body: EJSON): SubscriptionCountEvent
+}
+```
+
+```ts
+function subscribe(_, args, { db }) {
+  const collection = container.get(collectionClass);
+  const subscriptionStore = container.get(SubscriptionStore);
+
+  return subscriptionStore.createAsyncIteratorForCount(collection, filters);
+}
+```
+
+### Executors
+
+To allow you to write less code, you can use the built-in executors:
+
+```ts
+import * as X from "@kaviar/x-bundle";
+
+export default {
+  Subscription: {
+    // Default resolver works for argument signature: { body: EJSON }
+    usersSubscription: {
+      resolve: (payload) => payload,
+      subscribe: [X.ToSubscription(collectionClass)],
+    },
+    // Default resolver works for argument signature: { filters: EJSON }
+    usersSubscriptionsCount: {
+      resolve: (payload) => payload,
+      subscribe: [X.ToSubscriptionCount(collectionClass)],
+    },
+  },
+};
+```

@@ -6,9 +6,15 @@
  */
 
 /* You can override the default Infima variables here. */
+@import "variables.scss";
+@import "navbar.scss";
+@import "homepage.scss";
+@import "buttons.scss";
+@import "docs.scss";
+
 :root {
-  --ifm-color-primary: #f15a24;
-  --ifm-color-primary-dark: rgb(33, 175, 144);
+  --ifm-color-primary: red;
+  --ifm-color-primary-dark: rgb(29, 255, 161);
   --ifm-color-primary-darker: rgb(31, 165, 136);
   --ifm-color-primary-darkest: rgb(26, 136, 112);
   --ifm-color-primary-light: rgb(70, 203, 174);
@@ -44,10 +50,6 @@
   border-radius: 15px;
 }
 
-/* for some reason it doesn't work ok */
-.button--outline {
-  border: 1px solid #fff;
-}
 .docusaurus-highlight-code-line {
   background-color: rgb(72, 77, 91);
   display: block;
@@ -81,57 +83,4 @@
 
 .package-header-container .version {
   cursor: default;
-}
-
-.newsletter-container {
-  padding: 60px 30px;
-  text-align: center;
-  background: #eee;
-}
-
-.newsletter-container .signup-button {
-  margin-top: 20px;
-}
-
-.newsletter-container .pinky {
-  font-weight: bold;
-}
-
-.newsletter-container .no-spam {
-  color: #666;
-}
-
-.explained-container {
-  text-align: center;
-  padding: 60px 0;
-  background: rgb(255, 224, 203);
-}
-
-.explained-container h1 {
-  margin-bottom: 25px;
-}
-
-.explained-container .tabs {
-  max-width: 800px;
-  margin: 0 auto;
-  align-items: center;
-
-  justify-content: center;
-}
-
-.explained-container div[role="tabpanel"] {
-  max-width: 800px;
-  margin: 0 auto;
-  padding: 25px;
-}
-
-.feature-element {
-  text-align: center;
-}
-.feature-element .icon {
-  font-size: 5rem;
-}
-
-.feature-element .icon:hover {
-  color: var(--ifm-color-primary);
 }

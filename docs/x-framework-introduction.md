@@ -1,5 +1,5 @@
 ---
-id: x-way-introduction
+id: x-framework-introduction
 title: Introduction
 ---
 
