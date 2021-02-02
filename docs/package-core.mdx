@@ -5,9 +5,9 @@ title: Core
 
 import { PackageHeader } from "@site/src/components/PackageHeader";
 
-<PackageHeader version="1.1.1" packageName="core" containsTypeDefs />
+<PackageHeader version="1.1.3" packageName="core" containsTypeDefs />
 
-A powerful and lightweight module composition strategy responsible for orchestrating your logic, enabling you to easily respect SOLID principles within your infinitely-scalable app.
+A powerful and lightweight module composition strategy responsible for orchestrating your logic, enabling you to easily respect SOLID principles within your infinitely scalable app.
 
 ## Install
 
@@ -23,21 +23,25 @@ The kernel is what orchestrates all of your bundles.
 import { Kernel } from "@kaviar/core";
 
 const kernel = new Kernel();
+
+kernel.init().then(() => {
+  console.log("Kernel has been initialised.");
+});
 ```
 
-A sample of bundle:
+The Kernel is nothing without bundles. Bundles contain the logic.
 
 ```typescript
 import { Bundle } from "@kaviar/core";
 
 class AppBundle extends Bundle {
   async init() {
-    // Start your API. For example connect to a database.
+    // This is invoked when kernel is initialised
   }
 }
 ```
 
-We can now add bundles to our `kernel` until it gets initialised:
+You can add the bundle to the `kernel` in the constructor or later on:
 
 ```typescript
 const kernel = new Kernel({
@@ -48,20 +52,45 @@ const kernel = new Kernel({
 kernel.addBundle(new OtherBundle());
 
 kernel.init().then(() => {
-  console.log("Kernel has been initialised.");
+  // ...
 });
 ```
 
 Initialisation process prepares and initialiases all the bundles registered inside it. You can regard your `Bundles` as groups of independent logic or strongly separated concerns.
 
+Before we dive further into bundles and how we can manage them better, let's learn a bit about Dependency Injection (DI).
+
 ## Dependency Injection
 
-We never instantiate via `new` we only fetch instances of our services through the container, and there's only one container which is provided by the `Kernel`. Below we show-case a super simple way how we can use dependency injection between services
+An oversimplification of D.I. is that you don't depend on real stuff, you depend on references. For example, let's say you have a container that contains everything you need in your app, connection to the database, credentials, anything. And let's say you want to access the database service to do an insert, so instead of getting the service directly, you use the container:
+
+```ts
+container.set("database_service", MyDatabaseService);
+const databaseService = container.get("database_service");
+databaseService.insert({
+  /* ... */
+});
+```
+
+Now let's say the `databaseService` needs some credentials and a host to connect to. So instead of using a string directly or reading directly from env, it reads it from container:
+
+```ts
+container.set("database_uri", process.env.DATABASE_URI);
+class DatabaseService {
+  constructor(@Inject("database_uri") databseUri) {
+    // Just a sample for illustration
+    this.client = mongodb.connect(databaseUri);
+  }
+}
+```
+
+Now when we fetch DatabaseService from the container, it will automatically inject the dependencies.
+
+So, we never instantiate via `new` we only fetch instances of our services through the container, and there's only one container which is provided by the `Kernel`. Above we showed how to use references as strings ("database_uri", "database_service") but references can be classes themselves or (as we'll see later on) tokens.
 
 ```typescript
 import { Service } from "@kaviar/core";
 
-// We are currently using container from kernel, but don't worry we will show you how we will get access to the container from inside our Bundle
 const container = kernel.container;
 
 @Service()
@@ -69,25 +98,18 @@ class B {}
 
 @Service()
 class A {
-  // Automatic injection
+  // Automatic injection, you don't need to specify @Inject()
   constructor(b: B) {
     this.b = b;
   }
 }
 ```
 
-The idea here is that you never use `new` for our services, instead you do this:
+Now let's use them:
 
 ```typescript
 const a = container.get(A); // note, A is the className, a is the instance
 (instanceof a.b) === B; // true, a.b is an instance of B
-```
-
-If you want to benefit of autocompletion, there are 2 ways:
-
-```typescript
-const a = container.get<A>(A);
-const a: A = container.get(A);
 ```
 
 Services are singletons, meaning it instantiates once:
@@ -108,18 +130,18 @@ new Kernel({
   },
 });
 
-// You can get parameters via the getter, wrapping the key in %s
+// Fetching them is getting the string wrapped in %%
 const applicationUrl = container.get("%APPLICATION_URL%");
 
 // Or you can get them via kernel.parameters
 ```
 
-You can inject parameters from kernel, or other services like this:
+You can inject parameters from kernel, or others like this:
 
 ```typescript
 @Service()
 class A {
-  // Inject via property, note: it uses a function
+  // Inject via property, Note: it uses a function
   @Inject(() => "%DEBUG%")
   protected isDebug: boolean;
 
@@ -130,9 +152,31 @@ class A {
 }
 ```
 
+If you want to avoid having strings collide, you should use tokens as references:
+
+```ts
+import { Inject, Token } from "@kaviar/core";
+
+const MY_SERVICE_TOKEN = new Token();
+
+container.set(MY_SERVICE_TOKEN, B); // A simple B class
+class A {
+  // Property injection will be set after constructor
+  @Inject(MY_SERVICE_TOKEN)
+  b: B;
+
+  // OR
+
+  constructor(@Inject(MY_SERVICE_TOKEN) b: B) {
+    // Both solutions work well (property injection/constructor injection)
+    // Constructor is preferrable because you get access to the services inside it.
+  }
+}
+```
+
 ## Async Event Management
 
-Kaviar encourages event-driven applications. We encourage services to dispatch events rather than calling other services.
+What this is, is the ability to have event handlers that are async and can be blocking for the event propagation, and we finally have type-safety for our events.
 
 ```typescript
 import { EventManager, Event } from "@kaviar/core";
@@ -143,7 +187,7 @@ class UserCreatedEvent extends Event<{
 
 const manager = container.get(EventManager);
 
-manager.addListener(UserCreatedEvent, (e: UserCreatedEvent) => {
+manager.addListener(UserCreatedEvent, e => {
   // The data provided in event's constructor is found in event.data property
   console.log(e.data.userId);
 });
@@ -160,7 +204,7 @@ Note that you also have `removeListener`, `addGlobalListener` and `removeGlobalL
 ```typescript
 manager.addListener(
   UserCreatedEvent,
-  async (e: UserCreatedEvent) => {
+  async e => {
     // Do something before any other handler executes
   },
   {
@@ -178,7 +222,7 @@ class ObjectInsertedEvent extends Event<{
 
 manager.addListener(
   ObjectInsertedEvent,
-  async (e: ObjectInsertedEvent) => {
+  async e => {
     // Do something when the event
   },
   {
@@ -225,7 +269,7 @@ const bundle = new SaaSBundle({
   subscriptionFee: 10.0,
 });
 
-// And now you can add it to your Kernel.
+kernel.addBundle(bundle);
 ```
 
 Bundles have the following lifecycle:
@@ -278,11 +322,11 @@ import {
 class MyBundle extends Bundle {
   hook() {
     // Let's say you want to do stuff, after MyOtherBundle gets prepared.
-    const manager = this.get<EventManager>(EventManager);
+    const manager = this.container.get(EventManager);
 
     manager.addListener(
       BundleAfterPrepareEvent,
-      async (e: BundleAfterPrepareEvent) => {
+      async e => {
         // Do something
       },
       {
@@ -392,7 +436,7 @@ try {
 }
 ```
 
-## Modifying Bundles
+## Advanced Bundles
 
 Keep your bundle easily modifiable by allowing injection of customised services. The strategy is to use an `abstract class` as a placeholder, but there are other solutions as well.
 
@@ -437,12 +481,12 @@ This strategy is to explicitly state which hasher you want in the constructor, b
 ```typescript
 class SecurityExtensionBundle extends Bundle {
   async hook() {
-    const manager = this.get<EventManager>(EventManager);
+    const manager = this.container.get(EventManager);
 
     // Before SecurityBundle is prepared, I can either modify the config
     manager.addListener(
       BundleBeforePrepareEvent,
-      (e: BundleBeforePrepareEvent) => {
+      e => {
         const { bundle } = e.data;
 
         // We use the `updateConfig` command
@@ -503,7 +547,3 @@ export enum BundlePhase {
   FROZEN = INITIALISED,
 }
 ```
-
-## Conclusion
-
-Just describing what sounds an orchestra can make doesn't mean you can make music, as shown above there are many ways to go around a certain problem especially when having interoperable bundles. The core just contains the building blocks, the music notes and it is up to you, the developer, to make an work of art out of it.

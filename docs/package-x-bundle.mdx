@@ -1,11 +1,11 @@
 ---
 id: package-x-bundle
-title: X-Bundle
+title: Server Tools
 ---
 
 import { PackageHeader } from "@site/src/components/PackageHeader";
 
-<PackageHeader version="1.2.0" packageName="x-bundle" containsTypeDefs />
+<PackageHeader version="1.3.0" packageName="x-bundle" containsTypeDefs />
 
 The X-way is a set of tools that beautifully bridges the gap between your API Layer (GraphQL), your database (MongoDB), and your service layer. It is thought with fast-prototyping in mind but code scalability as well.
 
@@ -410,7 +410,7 @@ With LiveData you can subscribe and receive notifications when things change in 
 
 ### Behaviors
 
-So, collections need to emit messages when a mutation (insert/update/remove) happens in the system. We do this by attaching a behavior to it.
+Collections need to emit messages when a mutation (insert/update/remove) happens in the system. We do this by attaching a behavior to it.
 
 ```ts
 import { Behaviors } from "@kaviar/x-bundle";

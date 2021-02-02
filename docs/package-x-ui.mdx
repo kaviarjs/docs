@@ -1,15 +1,17 @@
 ---
 id: package-x-ui
-title: User Interface
+title: UI Tools
 ---
 
 import { PackageHeader } from "@site/src/components/PackageHeader";
 
-<PackageHeader version="1.0.1" packageName="x-ui" containsTypeDefs />
+<PackageHeader version="1.1.1" packageName="x-ui" containsTypeDefs />
 
 This bundle is a set of tools to allow you to quickly bootstrap your frontend. Using the X-way.
 
 ## Install
+
+You can easily create it by running `x`, choose `microservice`, and select `frontend`.
 
 ```bash
 npm i @kaviar/x-ui @apollo/client
@@ -70,11 +72,12 @@ export class UIAppBundle extends Bundle {
 ```
 
 ```tsx title="src/bundles/app/routes.ts"
-import { IRouteDefinition } from "@kaviar/x-ui-bundle";
+import { IRoute } from "@kaviar/x-ui-bundle";
 
-export const routes: IRouteDefinition = [
-  // You can add routes here directly or add them from the components by pushing here
-];
+export const HOME_PAGE: IRoute = {
+  path: "/",
+  component: Home,
+};
 ```
 
 Notice that you need to add `new UIAppBundle()` to your kernel.
@@ -259,6 +262,21 @@ eventManager.emit(new XEvent());
 useListener(XEvent, (e: XEvent) => {
   // lives as long as the component lives
 });
+```
+
+## Live Data
+
+```ts
+import { useCollectionSubscription } from "@kaviar/x-ui";
+
+const MyPage = () => {
+  const [posts, isReady] = useCollectionSubscription(PostsCollection, {
+    // The nova body
+    title: 1,
+  });
+
+  // Show the posts if isReady
+};
 ```
 
 ## The State Management
