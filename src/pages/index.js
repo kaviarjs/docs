@@ -71,7 +71,7 @@ function Home() {
           <p className="hero__subtitle">
             The Fullstack Typescript Framework for
             <br />
-            Web Magicians
+            Web Developers
             <br />
           </p>
           <div className={styles.buttons}>
