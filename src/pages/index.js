@@ -11,6 +11,7 @@ import { SubscribeToNewsletter } from "../components/SubscribeToNewsletter";
 import { IoIosApps, IoIosFlash, IoIosFlower } from "react-icons/io";
 import { Feature } from "../components/Feature";
 import { TextHighlight } from "../components/TextHighlight";
+import { ComparisonFrameworks } from "../components/ComparisonFrameworks";
 
 const features = [
   {
@@ -103,6 +104,7 @@ function Home() {
           <br />x
         </div>
       </div>
+      <ComparisonFrameworks />
       {/* <main className="explained-container">
         <h1>So, what can it do?</h1>
         <Tabs

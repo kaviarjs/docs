@@ -133,18 +133,14 @@ export const map: IElementMap = {
       title: "Introduction",
     },
     {
-      id: "x-framework-conventions",
-      title: "Conventions",
-    },
-    {
       id: "x-bundle",
-      title: "X-Bundle",
+      title: "Server Tools",
       package: "x-bundle",
       typeDocs: true,
     },
     {
       id: "x-ui",
-      title: "User Interface",
+      title: "UI Tools",
       package: "x-ui",
       typeDocs: true,
     },
@@ -159,6 +155,10 @@ export const map: IElementMap = {
       title: "Passwords",
       package: "x-password-bundle",
       typeDocs: true,
+    },
+    {
+      id: "x-framework-conventions",
+      title: "Conventions",
     },
   ],
 };
