@@ -7,7 +7,7 @@ import { PackageHeader } from "@site/src/components/PackageHeader";
 
 <PackageHeader version="1.0.4" packageName="mongo-bundle" containsTypeDefs />
 
-The MongoBundle offers integration with MongoDB database by allowing you to hook into events, giving ability to work with model classes and add behaviors. As well it is integrated with `@kaviar/nova` package which allows extremely rapid queries for relational data.
+The MongoBundle offers integration with MongoDB database by allowing you to hook into events, giving ability to work with model classes and add behaviors (such as timestampable, blameable). As well it is integrated with `@kaviar/nova` package which allows extremely rapid queries for relational data.
 
 ```bash
 npm install --save @kaviar/mongo-bundle @kaviar/nova
@@ -89,7 +89,7 @@ They are very explicit and typed with what they contain, a sample usage would be
 ```typescript
 import { AfterInsertEvent } from "@kaviar/mongo-bundle";
 
-eventManager.addListener(AfterInsertEvent, async (e: AfterInsertEvent) => {
+eventManager.addListener(AfterInsertEvent, async (e) => {
   if (e.collection instanceof PostsCollection) {
     // Do something with the newly inserted Post
     const postBody = e.data.document;
@@ -100,7 +100,7 @@ eventManager.addListener(AfterInsertEvent, async (e: AfterInsertEvent) => {
 // or simply do it on postsCollection.localEventManager
 ```
 
-Events should be attached in the `prepare()` phase of your bundle.
+Events should be attached in the `prepare()` phase of your bundle. The common strategy is by warming up a Listener, as described in the core.
 
 Events also receive a `context` variable. Another difference from classic MongoDB node collection operations is that we allow a `context` variable inside it that can be anything. That variable reaches the event listeners. It will be useful if we want to pass things such as an `userId` if we want some blameable behavior. You will understand more in the **Behaviors** section.
 
@@ -185,6 +185,20 @@ class UsersCollection extends Collection {
       },
       userIdFieldFromContext: "userId",
     }),
+    Behaviors.Softdeletable({
+      // optional config
+      fields: {
+        isDeleted: "isDeleted",
+        deletedAt: "deletedAt",
+        deletedBy: "deletedBy",
+      },
+    }),
+    // The validate behavior works with transactions and ensures the full document is correct
+    Behaviors.Validate({
+      // optional config
+      model: User,
+      options: {}, // validate options
+    }),
   ];
 }
 ```
@@ -192,7 +206,7 @@ class UsersCollection extends Collection {
 Now, you may have behaviors that require you to provide a context to the operations. Not doing so, they will be allowed to throw exceptions and block your execution. For example if you have blameable behavior, and you do not have a context with `userId` being either `null` either a value, an exception will be thrown.
 
 ```typescript
-usersCollection.insertOne(
+await usersCollection.insertOne(
   {
     firstName: "John",
     lastName: "Smithsonian",

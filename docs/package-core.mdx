@@ -21,7 +21,6 @@ The kernel is what orchestrates all of your bundles.
 
 ```typescript
 import { Kernel } from "@kaviar/core";
-
 const kernel = new Kernel();
 
 kernel.init().then(() => {
@@ -37,6 +36,7 @@ import { Bundle } from "@kaviar/core";
 class AppBundle extends Bundle {
   async init() {
     // This is invoked when kernel is initialised
+    console.log("I have been initialised");
   }
 }
 ```
@@ -62,10 +62,21 @@ Before we dive further into bundles and how we can manage them better, let's lea
 
 ## Dependency Injection
 
-An oversimplification of D.I. is that you don't depend on real stuff, you depend on references. For example, let's say you have a container that contains everything you need in your app, connection to the database, credentials, anything. And let's say you want to access the database service to do an insert, so instead of getting the service directly, you use the container:
+### Introduction
+
+An oversimplification of D.I. is that you don't depend on "real" implementations, you depend on references. For example, let's say you have a container that contains everything you need in your app, connection to the database, credentials, anything. And let's say you want to access the database service to do an insert, so instead of getting the service directly (by new-int it, or accessing the singleton), you use the container:
 
 ```ts
+class MyDatabaseService {
+  insert() {
+    // Do something
+  }
+}
+
+// You can get the container from `kernel.container`
 container.set("database_service", MyDatabaseService);
+
+// Note that it will instantiate the class you have set
 const databaseService = container.get("database_service");
 databaseService.insert({
   /* ... */
@@ -76,17 +87,20 @@ Now let's say the `databaseService` needs some credentials and a host to connect
 
 ```ts
 container.set("database_uri", process.env.DATABASE_URI);
+
 class DatabaseService {
   constructor(@Inject("database_uri") databseUri) {
     // Just a sample for illustration
-    this.client = mongodb.connect(databaseUri);
+    // this.client = mongodb.connect(databaseUri);
   }
 }
 ```
 
 Now when we fetch DatabaseService from the container, it will automatically inject the dependencies.
 
-So, we never instantiate via `new` we only fetch instances of our services through the container, and there's only one container which is provided by the `Kernel`. Above we showed how to use references as strings ("database_uri", "database_service") but references can be classes themselves or (as we'll see later on) tokens.
+So, we never instantiate via `new` we only fetch instances of our services through the container, and there's only one container which is provided by the `Kernel`. Above we showed how to use references as strings (`database_uri`, `database_service`) but references can be classes themselves or (as we'll see later on) tokens.
+
+### Services
 
 ```typescript
 import { Service } from "@kaviar/core";
@@ -112,12 +126,14 @@ const a = container.get(A); // note, A is the className, a is the instance
 (instanceof a.b) === B; // true, a.b is an instance of B
 ```
 
-Services are singletons, meaning it instantiates once:
+Services are singletons, meaning it instantiates only once:
 
 ```typescript
-const a = container.get<A>(A);
-a === container.get<A>(A); // true
+const a = container.get(A);
+a === container.get(A); // true
 ```
+
+### Parameters
 
 You can also specify a list of parameters to the kernel, that can later be retrieved from the container
 
@@ -152,6 +168,8 @@ class A {
 }
 ```
 
+### Tokens
+
 If you want to avoid having strings collide, you should use tokens as references:
 
 ```ts
@@ -169,19 +187,21 @@ class A {
 
   constructor(@Inject(MY_SERVICE_TOKEN) b: B) {
     // Both solutions work well (property injection/constructor injection)
-    // Constructor is preferrable because you get access to the services inside it.
+    // Just do what you feel is easier
   }
 }
 ```
 
 ## Async Event Management
 
-What this is, is the ability to have event handlers that are async and can be blocking for the event propagation, and we finally have type-safety for our events.
+This technique allows us to have typesafety for Event Management, and event handlers can be async and can be blocking for the event propagation.
 
 ```typescript
 import { EventManager, Event } from "@kaviar/core";
 
 class UserCreatedEvent extends Event<{
+  // This is what information you need to pass when creating the event
+  // It can be omitted if events don't store any data
   userId: string;
 }> {}
 
@@ -233,71 +253,123 @@ manager.addListener(
 
 This is just a shorthand function so it allows your handler to focus on the task at hand rather than conditioning execution.
 
-## Bundles
+### Listeners
 
-Ok, now that you've learned the basics of containers and async event management, it's time to understand where exactly to put these services and events. You should not have services or events outside a bundle. The bundle is what wraps them up.
-
-Let's create a Bundle that handles our subcriptions:
+In order to listen to events we have to register them somehow. This is why we introduce the concept of "warmup" for listeners.
 
 ```typescript
-// Here we define the configuration the bundle can have
-export interface ISaaSBundleConfig {
+import { Listener, On } from "@kaviar/core";
+
+// The base Listener class has a init() function that registers the events accordingly
+class NotificationListener extends Listener {
+  @On(UserAddedEvent, {
+    /* order, filter */
+  })
+  onUserAdded(e: UserAddedEvent) {
+    // Do something
+  }
+}
+```
+
+All listeners must be warmed up for them to work.
+
+## Warming Up
+
+Warming up instantiates the specific Service, and if the `init()` function exists it will be called.
+For example, you might use this for a DatabaseConnection, you want to immediately connect and you implement this in the service's `init()` function.
+
+```typescript
+class AppBundle extends Bundle {
+  async init() {
+    await this.warmup([NotificationListener]);
+  }
+}
+```
+
+## Bundles
+
+Ok, now that you've learned the basics of containers and async event management, it's time to understand where all logic lies (inside the bundles)
+
+### Configuration
+
+Bundles can have a specific configuration to them and this is passed when instantiating them:
+
+```ts
+type Config = {
   subscriptionFee: number;
   currency: string;
-}
+};
 
-// Here we define the config that is accepted by the bundle
-// Think of this as a subset of the config above.
-export interface ISaaSBundleRequiredConfig {
-  subscriptionFee: number;
-}
-
-// Note that these configurations are optional.
-class SaaSBundle extends Bundle<ISaaSBundleConfig, ISaaSBundleRequiredConfig> {
-  defaultConfig = {
-    // Not that this will be deeply merged with the config provided resulting into final config object
-    currency: "USD",
-  };
-
+class SaaSBundle extends Bundle<Config> {
   async init() {
-    // Access config here, example: this.config.currency
+    // You have access to the configuration in here: this.config
   }
 }
 
-// You benefit of autocompletion in the constructor
-const bundle = new SaaSBundle({
-  subscriptionFee: 10.0,
-});
-
-kernel.addBundle(bundle);
+kernel.addBundle(
+  new SaaSBundle({
+    subscriptionFee: 100,
+    currency: "USD",
+  })
+);
 ```
 
-Bundles have the following lifecycle:
+You can also specify a default configuration for your bundle. The config you pass when constructing the bundle gets merged deeply with `defaultConfig`.
+
+```ts
+class SaaSBundle extends Bundle<Config> {
+  defaultConfig = {
+    currency: "USD",
+  };
+}
+```
+
+Another feature regarding configuration is providing a required config. A config that you must always pass:
+
+```ts
+type RequiredConfig = {
+  subscriptionFee: number;
+};
+
+class SaaSBundle extends Bundle<Config, RequiredConfig> {}
+
+new SaaSBundle({
+  // Must be provided
+  subscriptionFee: 100,
+});
+```
+
+We decided to make this split because we want developers to force a specific value for a bundle that wouldn't be feasible to have it in `defaultConfig`.
+
+You can also have more complex validation logic via `validate()`:
+
+```ts
+class SaaSBundle extends Bundle<Config, RequiredConfig> {
+  async validate(config) {
+    // Ensure that the provided config is ok
+    // Throw an exception if it's not ok.
+  }
+}
+```
+
+### Lifecycle
+
+Right now you've seen that bundles get initialised via the `init()` async function. But there's more to it because we wanted to allow bundles to work together and extend each other.
 
 ```typescript
 class MyBundle extends Bundle<MyBundleConfig> {
-  // validation is done when kernel starts the initialisation process
-  async validate(config: MyBundleConfig) {}
-
-  // Gives you the chance to hook into kernel and bundle-level events.
-  // Runs before KernelBeforeInitEvent
+  // This runs first and you can hook to bundle events
+  // For example (before or after a specific bundle initialises)
   async hook() {}
 
-  // Here you can basically prepare for initialisation, for example registering listeners, binding configurations to services.
+  // Here you can basically prepare for initialisation, for example registering listeners, etc
+  // You can regard this as container-preparation phase.
   async prepare() {}
 
   // The final step in the bundle's lifecycle. This is where bundles usually start event loops (you start express), or connect to the database
   async init() {}
 }
 ```
-
-When we do `kernel.init()`, the following things happen:
-
-1. We inject the `kernel` via `setKernel()` inside the Bundle instance
-2. We await validation from all bundles
-3. We start the hooking phase
-4. We await preparation from all bundles
-5. We await initialisation from all bundles
 
 Kernel also emits the following events (name descriptive enough), and listeners are run in-sync:
 
@@ -307,6 +379,8 @@ Kernel also emits the following events (name descriptive enough), and listeners 
 - BundleBeforeInitEvent
 - BundleAfterInitEvent
 - KernelAfterInitEvent
+
+### Hooking
 
 So, in theory you have the chance to hook even more to the bundles you love:
 
@@ -337,9 +411,7 @@ class MyBundle extends Bundle {
 }
 ```
 
-:::caution
-Be careful if you emit certain events within the lifecycle of your bundles, because usually listener registration is done in prepare(), and if you emit an event before its handler was registered, it will not reach the listener.
-:::
+### Credentials and Keys
 
 Let's say we have a bundle that needs an API key, for example, `MailBundle` needs some authentication parameters. The way we connect Bundle's config to the container is by setting some constants into the container which the services use in their instantiation.
 
@@ -370,34 +442,6 @@ class MailBundle extends Bundle<IMailBundleConfig> {
   async prepare() {
     // We do this in prepare() phase
     this.container.set(Constants.API_KEY, this.config.apiKey);
-  }
-}
-```
-
-## Listening to Events
-
-In order to listen to events we have to register them somehow. This is why we introduce the concept of "warmup" for listeners.
-
-```typescript
-import { Listener, On } from "@kaviar/core";
-
-// The base Listener class has a init() function that registers the events accordingly
-class NotificationListener extends Listener {
-  @On(UserAddedEvent, {
-    /* order, filter */
-  })
-  onUserAdded(e: UserAddedEvent) {
-    // Do something
-  }
-}
-```
-
-```typescript
-class AppBundle extends Bundle {
-  async prepare() {
-    // Warmup forces service construction, and calls the init() function with no arguments
-    // If the function exists.
-    await this.warmup([NotificationListener]);
   }
 }
 ```

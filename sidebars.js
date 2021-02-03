@@ -7,6 +7,9 @@ module.exports = {
     ],
     "Foundation": [
         "package-core",
+        "package-emails",
+        "package-validator-bundle",
+        "package-logger",
         {
             "type": "category",
             "label": "Database",
@@ -15,7 +18,6 @@ module.exports = {
                 "package-nova"
             ]
         },
-        "package-logger",
         {
             "type": "category",
             "label": "Security",
@@ -34,9 +36,7 @@ module.exports = {
                 "package-apollo-security"
             ]
         },
-        "package-emails",
-        "package-terminal",
-        "package-validator-bundle"
+        "package-terminal"
     ],
     "X-Framework": [
         "x-framework-introduction",

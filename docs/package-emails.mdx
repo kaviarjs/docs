@@ -9,19 +9,19 @@ import { PackageHeader } from "@site/src/components/PackageHeader";
 
 This bundle helps you connect to your favorite (swapable) transporter and render React templates as email. It is thought to work with TypeScript and enjoy type-safety.
 
-## Installation
+## Install
 
 ```bash
 npm install @kaviar/email-bundle react react-dom
 ```
 
-# Email Bundle
+## Emails
 
 ```typescript
 new KaviarEmailBundle(config);
 
 // The config interface
-:
+
 export interface IEmailBundleConfig {
   /**
    * If you don't pass a transporter, a test transporter will be created
@@ -29,14 +29,14 @@ export interface IEmailBundleConfig {
    * Or you may want to inject a custom transporter later on from your bundles.
    */
   transporter?: {
-      host: string;
-      port: number;
-      secure?: boolean;
-      auth?: {
-        user: string;
-        pass: string;
-      };
+    host: string;
+    port: number;
+    secure?: boolean;
+    auth?: {
+      user: string;
+      pass: string;
     };
+  };
   defaults: {
     from?: string;
     /**
@@ -69,13 +69,13 @@ Read more here:
 
 And if you want to have a registered, service-dependency container that creates the transport inside your bundle, then, in the `hook()` phase, listen to `BundleBeforePrepareEvent` and `setTransporter()` with your own custom transport solution. Same logic would apply if you want to extend the global props (props that reach any email template).
 
-## Usage
+## Templates
 
 Let's create an email template:
 
 ```typescript
 // https://nodemailer.com/about/
-const emailService = this.get<EmailService>(EmailService);
+const emailService = container.get(EmailService);
 
 export interface IWelcomeEmailProps {
   name: string;

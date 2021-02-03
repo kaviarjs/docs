@@ -28,7 +28,7 @@ export function ComparisonFrameworks({ icon, title, description }) {
             <td></td>
             <td>Kaviar</td>
             <td>NestJS</td>
-            <td>TypeGraphQL</td>
+            <td>Meteor</td>
             <td>KeystoneJS</td>
             <td>LoopBack</td>
           </tr>
