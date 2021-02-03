@@ -17,13 +17,24 @@
 .feature-element {
   text-align: center;
   .feature-header {
-    background: lighten(red, 10%);
-    color: #fff;
+    background: #fff;
+    border-color: red;
+    border-radius: $radius;
+    border: 7px solid red;
+    border-bottom: none;
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+    color: $contrastColor;
     padding: 16px;
   }
   .feature-description {
-    background: red;
-    color: #fff;
+    // background: red;
+    // color: #fff;
+    border-radius: $radius;
+    border: 7px solid red;
+    border-top: none;
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
     padding: 16px;
   }
   .icon {
