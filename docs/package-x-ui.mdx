@@ -293,10 +293,7 @@ import { Smart, ApolloClient } from "@kaviar/x-ui";
 
 // Smart is now a transient service, each time we invoke .get() from container, we get a new instance
 class MyLoader extends Smart {
-  constructor(
-    @Inject(() => ApolloClient)
-    protected readonly apolloClient
-  ) {}
+  constructor(protected readonly apolloClient: ApolloClient) {}
 
   loadUsers() {
     this.apolloClient
@@ -322,14 +319,4 @@ const Component = () => {
 const ComponentWrapper = smart(MyLoader, {
   // optional config
 })(Compnent);
-```
-
-```ts
-projects.find(
-  {},
-  {},
-  {
-    reactive: true,
-  }
-);
 ```
