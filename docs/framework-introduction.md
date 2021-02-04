@@ -33,6 +33,13 @@ Main features of it are:
 - Type-safe MongoDB with relational features.
 - GraphQL tools (authorisation, live data, dependency injection, security)
 
+If you wish to start fast, we suggest talking a look at [the sample boilerplate](https://github.com/kaviarjs/x-boilerplate) which is ready to go:
+
+```bash
+# More instructions on the README
+git clone https://github.com/kaviarjs/x-boilerplate
+```
+
 ## Learning Curve
 
 It's a great idea to know both JavaScript and TypeScript. But don't feel bad if you haven't ascended yet to godhood (TypeScript), you're a developer you can learn it as you go! It's important that your [JavaScript Basics](https://developer.mozilla.org/en-US/docs/Learn/Getting_started_with_the_web/JavaScript_basics) are there so you can easily follow through. Besides JS Basics, we recommend you understand the following concepts:

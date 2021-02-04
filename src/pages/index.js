@@ -99,9 +99,16 @@ function Home() {
       </main>
       <div className="just-go">
         <h1>Start fast with X-Framework</h1>
+        use the generator
         <div className="start-code">
           npm i -g @kaviar/x
           <br />x
+        </div>
+        <br />
+        or simply clone it
+        <br />
+        <div className="start-code">
+          git clone https://github.com/kaviarjs/x-boilerplate
         </div>
       </div>
       <ComparisonFrameworks />
