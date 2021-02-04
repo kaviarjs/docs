@@ -5,7 +5,7 @@ title: Basics
 
 import { PackageHeader } from "@site/src/components/PackageHeader";
 
-<PackageHeader version="1.0.1" packageName="graphql-bundle" containsTypeDefs />
+<PackageHeader version="1.1.0" packageName="graphql-bundle" containsTypeDefs />
 
 The GraphQL Bundle is an abstract way to load your Type Definitions, Resolvers, Scalars, Context Transformers/Reducers in a unified place. We made this design choice to be able to hook it with any kind of GraphQL server without making any change to your code. For example, if there's another bundle that instantiates a GraphQL server, you can later swap it for let's say a `serverless` bundle without making any changes to your code.
 
@@ -302,4 +302,35 @@ load({
     ],
   },
 });
+```
+
+## Types
+
+When we are dealing with a GraphQL resolver, there are 2 things we need types for usually: arguments and context. While context is the same from resolver to resolver, arguments change.
+
+You can have additional context reducers which extend your context, to type them, use the following strategy:
+
+```ts title="defs.ts"
+import "@kaviar/graphql-bundle";
+
+declare module "@kaviar/graphql-bundle" {
+  export interface IGraphQLContext {
+    myValue: string;
+  }
+}
+```
+
+For arguments, you either use a generator to transform your GraphQL types into TypeScript. Which can be good but that's an extra process you have to take care of. Usually you would use models that can be validated and the arguments should look like `register(input: RegisterInput!): String`. This is why you can do, in most cases, something like:
+
+```ts title="a sample resolver"
+import { InputType } from "@kaviar/graphql-bundle";
+
+type RegisterInput = {
+  myValue: string;
+};
+
+function register(_, args: InputType<RegisterInput>, context: IGraphQLContext) {
+  const { input } = args;
+  // Type safety on input, as it is RegisterInput
+}
 ```
