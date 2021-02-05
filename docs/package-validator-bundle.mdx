@@ -148,11 +148,11 @@ Now let's say you receive from inputs a date, but not an object date, a string, 
 
 ```typescript
 import * as moment from "moment";
-import { yup, IValidationMethod } from "@kaviar/validator-bundle";
+import { yup, IValidationTransformer } from "@kaviar/validator-bundle";
 
 type IDateTransformerConfig = string;
 
-class DateTransformer implements IValidationMethod<IDateTransformerConfig, Date> {
+class DateTransformer implements IValidationTransformer<IDateTransformerConfig, Date> {
   // What is your string like, which you want to validate?
   parent = yup.date, // optional, defaults to yup.mixed, so to all
   name = "format";
