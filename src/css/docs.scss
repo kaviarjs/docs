@@ -12,11 +12,11 @@
     h1 {
       font-size: 1.8em;
       font-weight: 300;
-      background: $contrastColor;
-      color: #fff;
+      color: $contrastColor;
+      border-bottom: 3px solid $contrastColor;
       text-align: center;
       padding: 9px;
-      border-radius: $radius;
+      // border-radius: $radius;
     }
     h2 {
       font-weight: 500;

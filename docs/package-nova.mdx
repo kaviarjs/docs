@@ -5,7 +5,7 @@ title: Nova
 
 import { PackageHeader } from "@site/src/components/PackageHeader";
 
-<PackageHeader version="1.3.2" packageName="nova" containsTypeDefs />
+<PackageHeader version="1.4.1" packageName="nova" containsTypeDefs />
 
 Nova is the fetching layer on top of MongoDB Node Driver, which allows SQL-comparable speeds for retrieving relational data.
 
@@ -205,6 +205,8 @@ query(Posts, {
 
 ## Relational Filtering and Sorting
 
+### Filtering
+
 While working with MongoDB, another pain-point was what we call `relational filtering`, which simply means, I want to get all employees that belong in a company that is verified. Then what if I want to paginate them?
 
 All of these problems are currently solved, and we belive the API is far superior than SQL in terms of clarity.
@@ -290,6 +292,30 @@ query(Companies, {
   },
 });
 ```
+
+### Sorting
+
+A common scenario is to sort by other's field value. For example I'm looking at employees but I'm sorting the list by Company's name. Where `company` is the link from `employees` collection.
+
+```ts
+// We are looking for A's which have exactly 2 B's
+const result = await query(Employees, {
+  $: {
+    pipeline: [
+      lookup(Employees, "company"),
+      {
+        $sort: {
+          "company.name": 1,
+        },
+      },
+    ],
+  },
+  _id: 1,
+  // other fields
+}).fetch();
+```
+
+You can apply sorting even for computed values, as you've seen above, where we calculated the departments count.
 
 ## Dynamic Filters
 
@@ -378,6 +404,32 @@ addReducers(Posts, {
     ],
   },
 });
+```
+
+### Context in Reduce
+
+```ts
+addReducers(Users, {
+  fullName: {
+    dependency: {},
+    async reduce(obj, params) {
+      const { context } = params;
+      // Do something with context.language
+    },
+  },
+});
+
+// Let's pass the language as a context as the 3rd parameter to query
+// Context will reach reducers
+query(
+  Users,
+  {
+    fullName: 1,
+  },
+  {
+    language: "en",
+  }
+);
 ```
 
 Notes:
@@ -478,6 +530,10 @@ const Query = {
         // Simply removes from the graph what fields it won't allow
         // Can work with deep strings like 'comments.author'
         deny: [], // String[]
+
+        // This will get merged with the main body before applying all security restrictions
+        // It is called side, because usually it's designed to blend "$" objects into an extracted query from GQL
+        sideBody: {},
       })
       .fetch();
   },
