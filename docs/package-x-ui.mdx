@@ -7,7 +7,7 @@ import { PackageHeader } from "@site/src/components/PackageHeader";
 
 <PackageHeader version="1.2.0" packageName="x-ui" containsTypeDefs />
 
-This bundle is a set of tools to allow you to quickly bootstrap your frontend. Using the X-way.
+This bundle is a set of tools allowing you to do beautiful frontends. Using the X-Framework.
 
 ## Install
 
@@ -20,11 +20,12 @@ npm i react react-dom react-router-dom
 
 ## Setup
 
-First we initialise our kernel with our bundle:
+We begin by defining our kernel, and our initial bundle
 
-```ts title="src/startup/kernel.ts"
-import { XUIBundle } from "@kaviar/x-ui";
+```tsx title="kernel.ts"
 import { Kernel } from "@kaviar/core";
+import { XUIBundle } from "@kaviar/x-ui";
+import { UIAppBundle } from "{...}/UIAppBundle";
 
 // All UI bundles need to be prefixed with UI
 // All X-way bundles have the first prefix X
@@ -34,220 +35,450 @@ export const kernel = new Kernel({
       graphql: {
         // ApolloClient Options
         // https://www.apollographql.com/docs/react/api/core/ApolloClient/#ApolloClientOptions
-        uri: "http://localhost:4000/graphql",
+        uri: process.env.REACT_APP_GRAPHQL_URI,
       },
     }),
+    new UIAppBundle(),
   ],
 });
 ```
 
-Then we use the provider to generate the root rendering.
+Now create a sample `UIAppBundle`, and we ask it to load the routes.
 
-```tsx title="src/startup/App.tsx"
-import * as React from "react";
-import { XUIProvider } from "@kaviar/x-ui";
+```ts
+import { Bundle } from "@kaviar/core";
+
+export class UIAppBundle extends Bundle {}
+```
+
+And now we can finally render.
+
+```tsx
 import { kernel } from "./kernel";
+import { XUIProvider } from "@kaviar/x-ui";
+import React from "react";
+import ReactDOM from "react-dom";
 
-export const App = () => <XUIProvider kernel={kernel} />;
+ReactDOM.render(
+  <XUIProvider kernel={kernel} />,
+  document.getElementById("root")
+);
 ```
 
 ## Routing
 
-Now let's create routes. It's important to understand that everything we do for routing is done via services and through the container.
+We add routes through the `XRouter`. Routes are added programatically. Behind the scenes we use `react-router-dom` .
 
-```tsx title="src/bundles/ui-app/UIAppBundle.ts"
-import { XRouter } from "@kaviar/x-ui";
-import { routes } from "./routes";
-import "./pages"; // Described later what for
+```tsx
 import { Bundle } from "@kaviar/core";
 
 export class UIAppBundle extends Bundle {
   async init() {
-    // All routes are added via service
     const router = this.get<XRouter>(XRouter);
 
-    router.add(routes);
-  }
-}
-```
-
-```tsx title="src/bundles/app/routes.ts"
-import { IRoute } from "@kaviar/x-ui-bundle";
-
-export const HOME_PAGE: IRoute = {
-  path: "/",
-  component: Home,
-};
-```
-
-Notice that you need to add `new UIAppBundle()` to your kernel.
-
-```tsx title="src/bundles/app/pages/Home.tsx"
-import * as React from "react";
-import { routes } from "../routes";
-
-// Example if you want to keep routes near pages rather than centralised
-routes.push({
-  path: "/",
-  component: Home,
-});
-
-export const Home = () => {
-  return <h1>Hello world!</h1>;
-};
-```
-
-Now don't forget to import it. Everything that adds to routing should be imported. If a route does not work, double check that you have imported it.
-
-```tsx title="src/bundles/app/pages/index.ts"
-import "./Home";
-```
-
-If you prefer keeping your routes separated from components, feel free to do so. Especially if you have bundles pages, such as a CRUD, it can be a good idea to have something like `pages/UsersCRUD/routes.ts` that gets imported from `pages/UsersCRUD/index.ts`, which gets imported from `pages/index.ts`.
-
-Routes can also have a name instead of a path, this can be helpful when generating routes:
-
-```tsx
-import { useRoute } from "@kaviar/x-ui";
-
-const Component = () => {
-  // This gets you access to our custom Router which can inteligently create routes by name and others
-  const router = useRouter();
-  const path = router.path(HOME_PAGE, {
-    projectId: "XXX",
-  });
-
-  router.go(path);
-};
-```
-
-## GraphQL
-
-Since we are using `@apollo/client` we can use it directly in here. You can look at the official documentation for more info:
-
-- https://www.apollographql.com/docs/react/data/queries/
-- https://www.apollographql.com/docs/react/data/mutations/
-
-However we'll cover here how we can work with our client-side collections to achieve more seamless operations:
-
-```tsx title="Defining client-side collections"
-import { Collection } from "@kaviar/x-ui";
-
-interface IProject {
-  name: string;
-}
-
-class Projects extends Collection<IProject> {
-  // This should be the same as the name you've given the CRUD on the backend
-  name = "projects";
-
-  // You have ability here to enter additional methods
-  getProjectMemberCount(projectId: any) {
-    return this.apolloClient.query({
-      query: gql`...`,
+    router.add({
+      HOME: {
+        path: "/",
+        component: () => <h1>Hello world!</h1>,
+        // All other properties from react-router-dom can be added here
+      },
     });
   }
 }
 ```
 
-No one would stop you to use directly `useQuery`, however this is a more javascript-oriented approach to things, which we believe accelerates development
+Our strong recommendation is to never rely on strings for routes, this is why we'll add them in a route map and use it like this:
 
-// TODO: allow mutation names customisations
+```ts title="routes.ts"
+export const HOME = {
+  path: "/",
+  component: () => <h1>Hello world!</h1>,
+};
 
-```tsx title="Usage"
-import { Projects } from "your-path/Projects.collection";
+export const USER_VIEW = {
+  path: "/users/:_id",
+  // Route parameters are injected in the component's props
+  component: ({ _id }) => <h1>Hello user {_id}!</h1>,
+};
 
-const ProjectList = () => {
-  const projects = use(Projects);
-  const [results, setResults] = useState([]);
-
-  useEffect(() => {
-    // Find returns a promise
-    projects
-      .find(
-        {},
-        {
-          _id: 1,
-          name: 1,
-        }
-      )
-      .then(setResults);
-  }, []);
-
-  projects.update(
-    { _id },
-    {
-      $set: {
-        status: StatusEnum.READY,
-      },
-    }
-  );
-
-  return (
-    <ul>
-      {results.map((project) => (
-        <li>{project.name}</li>
-      ))}
-    </ul>
-  );
+export const SEARCH = {
+  path: "/search",
+  // Query variables (/search?q=something), are all injected inside `queryVariables` property
+  component: ({ queryVariables }) => (
+    <h1>You are searching {queryVariables.q}</h1>
+  ),
 };
 ```
 
-You also have access to the following commands:
+And now simply add them in your bundle like this:
 
 ```ts
-projects.find(
+import * as Routes from "./routes";
+
+// The function from the Bundle
+async function init() {
+  const router = this.get<XRouter>(XRouter);
+
+  router.add(Routes);
+}
+```
+
+Using the link and generating it:
+
+```tsx
+import { useRouter } from "@kaviar/x-ui";
+import * as Routes from "{path}/routes.ts";
+import { Link } from "react-router-dom";
+
+function Component() {
+  // router.path gets you the path
+  // router.go also pushes it to history
+
+  const router = useRouter();
+  return (
+    <div>
+      <Link to={router.path(HOME)}>Home Link</Link>
+      <button onClick={() => router.go(HOME)}>Take me home</button>
+      <Link to={router.path(USER_VIEW, { params: { _id: "123" } })}>
+        Parameter Login
+      </Link>
+      <Link to={router.path(SEARCH, { query: { q: "value" } })}>Home Link</Link>
+    </div>
+  );
+}
+```
+
+## Dependency Injection
+
+We have succcesfully blended D.I. with React. The concept is easy, you control your container inside the `prepare()` or `init()` phase of a bundle, you use it inside React. The right container is properly passed because everything is wrapped in `<XUIProvider />`.
+
+```ts
+import { useContainer, useRouter, use } from "@kaviar/x-ui";
+
+class A {}
+
+function Component() {
+  const container = useContainer();
+  // You fetch the singleton instance of A
+  const a = use(A);
+  // Just like we used router above
+  const router = useRouter();
+}
+```
+
+## GraphQL
+
+We use `@apollo/client` so in theory, all you have to do is just use it. You can [follow the official guideline here](https://www.apollographql.com/docs/react/api/react/hooks/), they will work outside the box without changing anything.
+
+```tsx
+import { ApolloClient } from "@kaviar/x-ui";
+
+function Component() {
+  // Note, that we implement our own ApolloClient which extends the base one, so we can properly create the links and everything
+  const apolloClient = use(ApolloClient);
+}
+```
+
+## Collections
+
+Collections are an interface to your remote database via `GraphQL` as long as the remote queries and mutations respect a specific interface. That interface you get it in a snap when you create a `GraphQL CRUD` from the cli command `x`.
+
+```ts
+import { Collection } from "@kaviar/x-ui";
+import { Post } from "./Post.model";
+
+export class Post {
+  _id: any;
+  title: string;
+  isApproved: boolean;
+}
+
+export class PostsCollection extends Collection<Post> {
+  getName() {
+    // This is the endpoint name of the crud
+    // Queries: postsFind, postsFindOne, postsCount
+    // Mutations: postsInsertOne, postsUpdateOne, postsDeleteOne
+    return "posts";
+  }
+}
+```
+
+### Queries
+
+Below, we'll have a simple example how to use the posts collection to find data.
+
+```tsx
+function Component() {
+  const postsCollection = use(PostsCollection);
+
+  const [posts, setPosts] = useState([]);
+
+  useEffect(() => {
+    postsCollection
+      .find(
+        {},
+        {
+          // We specify which fields to use
+          _id: 1,
+          title: 1,
+        }
+      )
+      .then((posts) => setPosts(posts));
+  });
+
+  // Render them somehow
+}
+```
+
+Queries support both MongoDB filters and options:
+
+```ts
+postsCollection.find(
   {
     filters: {
-      // Some filter example, these filters are from MongoDB
-      type: "active",
+      isApproved: true,
     },
     options: {
-      // Sorting
-      sort: { createdAt: 1 },
-      // Pagination
-      limit: 10,
-      skip: 0,
+      sort: {
+        createdAt: -1,
+      },
     },
   },
   {
-    // We call this argument the "body" of the request
-    // Here you enter what you want to fetch, just a sample
-    // We are using json-to-graphql-query package behind the scenes
     _id: 1,
-    name: 1,
-    owner: {
-      firstName: 1,
+    title: 1,
+  }
+);
+// The request can span-out on many lines, sometimes it's good to define them outside a component
+```
+
+We also support relational data, if relations are defined with `Nova` in the backend:
+
+```ts
+postsCollection.find(
+  {},
+  {
+    _id: 1,
+    title: 1,
+    author: {
+      name: 1,
     },
   }
 );
+```
 
-// Returns promise of just one element
-projects.findOne({ filters, options }, body);
-projects.findOneById(_id, body);
+We also support filtering the subset of relations:
 
-projects
+```ts
+// This sideBody will get merged on the backend, and is sent via options field.
+const sideBody = {
+  comments: {
+    // This will only fetch the last 5 comments
+    $: {
+      options: {
+        sort: { createdAt: -1 },
+        limit: 5,
+      },
+    },
+  },
+};
+
+postsCollection.find(
+  {
+    sideBody,
+  },
+  {
+    _id: 1,
+    title: 1,
+    comments: {
+      name: 1,
+    },
+  }
+);
+```
+
+Relational sorting means that you're sorting your current set, by a relation's field. For example you're listing all employees, and you want them sorted by company's name:
+
+```ts
+employeesCollection.find(
+  {
+    options: {
+      sort: {
+        "company.name": 1,
+      },
+    },
+  },
+  {
+    name: 1,
+    company: {
+      name: 1,
+    },
+  }
+);
+```
+
+You can also find a single document with filters or by \_id:
+
+```ts
+let post;
+post = postsCollection.findOne({ _id: postId }, { title: 1 });
+// Equivallence
+post = postsCollection.findOneById(postId, { title: 1 });
+```
+
+Counting documents is also easy:
+
+```ts
+postsCollection.count(filters).then((count) => {});
+```
+
+### Mutations
+
+We have made the decision to not allow multi document updates or insertions due to security concerns. This is why we can only insert a single document, update document by \_id, and remove it also by \_id:
+
+```ts
+postsCollection
   .insertOne({
-    name: "Project 1",
+    title: 1,
+    userId: "USER_ID",
   })
   .then(({ _id }) => {
-    // Do something with it
+    // Do something with the newly created _id
   });
-projects
-  .updateOne(_id, {
-    // MongoDB Update Operations
+
+postsCollection
+  .updateOne(postId, {
     $set: {
-      name: "Project 1 - Updated",
+      title: "New Title",
     },
   })
-  .then(({ _id }) => {
-    // Here
+  .then(() => {
+    // Do something after updating it
   });
 
-projects.deleteOne(_id).then(() => {
-  // ...
+postsCollection.deleteOne(postId).then(() => {
+  // Do something after deleting it
 });
 ```
+
+### Extensions
+
+Why not put all related logic for fetching data for that collection inside it?
+
+```ts
+class PostsCollection extends Collection<Post> {
+  findAllApprovedPosts() {
+    // You have access to apolloClient inside it
+    // this.apolloClient.query()
+  }
+}
+```
+
+## Integration with Smart
+
+Smart is a very small library that does state management by using `useState()` from React and `useContext()` allowing you to easily split logic out of your components.
+
+The difference here is that `Smart` from this package, allows you to work with the D.I. container:
+
+```ts
+import { Smart, useSmart, newSmart } from "@kaviar/x-ui";
+
+class MySmart extends Smart<any, any> {
+  @Inject()
+  eventManager: EventManager;
+}
+
+function Component() {
+  const [mySmart, Provider] = newSmart(MySmart);
+
+  // mySmart has been instantiated by the container, seemlessly
+}
+```
+
+## Lists
+
+We have created a `Smart` that allows you to easily work with lists:
+
+```ts title="PostListSmart.ts"
+import { ListSmart } from "@kaviar/x-ui";
+import React from "react";
+import { Post, PostsCollection } from "../../collections";
+
+const PostsListContext = React.createContext(null);
+export class PostsListSmart extends ListSmart<Post> {
+  collectionClass = PostsCollection;
+
+  body = {
+    // You have all the benefits of the Nova body we've seen in Collections
+    // If you have a custom prop-based body you can pass it via config when doing `newSmart()`
+    _id: 1,
+    title: 1,
+    user: {
+      name: 1,
+    },
+  };
+
+  static getContext() {
+    return PostsListContext;
+  }
+}
+```
+
+Now we can use it in our components:
+
+```ts
+function Component() {
+  const [api, Provider] = newSmart(PostsList, {
+    perPage: 5, // optional pagination
+    filters: {}, // initial filters that can't be overriden
+    sort: {
+      createdAt: -1,
+    },
+  });
+}
+```
+
+Now you can access `api.state` from within `Component` or via `api = useSmart(PostsList)` in deeply nested children:
+
+```ts
+// This is how the state looks like:
+export type ListState<T = any> = {
+  isLoading: boolean;
+  isError: boolean;
+  isCountLoading: boolean;
+  isCountError: boolean;
+  documents: T[];
+  filters: MongoFilterQuery<T>;
+  options: IQueryOptions<T>;
+  currentPage: number;
+  perPage: null | number;
+  totalCount: number;
+  errorMessage: string;
+  countErrorMessage: string;
+};
+```
+
+So you have acces to nice things now you will most likely play with:
+
+```ts
+api.setFilters({
+  title: new RegExp("{value from a search field}", "i"),
+});
+
+api.updateSort({
+  title: 1, // After let's say he clicks a table
+});
+```
+
+## Guardian
+
+:::caution
+To be documented
+:::
+
+You now have the complete toolbelt to have smart authentication, works without any effort with X-Framework Server.
+
+See how it has been implemented [in the boilerplate](https://github.com/kaviarjs/x-boilerplate/tree/main/microservices/ui/src/bundles/UIAppBundle/pages/Authentication)
 
 ## Events
 
@@ -266,57 +497,41 @@ useListener(XEvent, (e: XEvent) => {
 
 ## Live Data
 
+It's easy as:
+
 ```ts
 import { useCollectionSubscription } from "@kaviar/x-ui";
 
-const MyPage = () => {
+const MyLivePage = () => {
   const [posts, isReady] = useCollectionSubscription(PostsCollection, {
-    // The nova body
+    // The full specced body
+    $: {
+      filters: {},
+      options: {}
+    }
     title: 1,
   });
 
-  // Show the posts if isReady
+  // Render the posts if isReady
+  //
 };
 ```
 
-## The State Management
+You can also hook into the events, via the 3rd argument, options:
 
-There is a simple way to work. We define our state via a class, and we define our api that manipulates the state. We are using `@kaviar/smart` package:
-
-Please read the documentation from [Smart Official Documentation](https://github.com/kaviarjs/smart). It's super easy to understand.
-
-However, this time you will use smart but import it from this package, because we hook it into our dependency injection containers:
-
-```tsx
-import { Service, Inject } from "@kaviar/core";
-import { Smart, ApolloClient } from "@kaviar/x-ui";
-
-// Smart is now a transient service, each time we invoke .get() from container, we get a new instance
-class MyLoader extends Smart {
-  constructor(protected readonly apolloClient: ApolloClient) {}
-
-  loadUsers() {
-    this.apolloClient
-      .query({
-        /* ... */
-      })
-      .then((response) => {
-        // Example of setting state
-        this.setState({
-          users: response.users,
-        });
-      });
-  }
-}
-
-const Component = () => {
-  const myLoader = useSmart(MyLoader);
-
-  // myLoader.state.users
-  // myLoader.loadUsers()
-};
-
-const ComponentWrapper = smart(MyLoader, {
-  // optional config
-})(Compnent);
+```ts
+useCollectionSubscription(collectionClass, body, {
+  onReady() {
+    // Do something when all data has been initially loaded
+  },
+  onChanged(document, changeSet, previousDocument) {
+    // Do something when something about the subscription changes
+  },
+  onRemoved(document) {
+    // Do something when document is removed
+  },
+  onAdded(document) {
+    // Do something when document is added
+  },
+});
 ```
