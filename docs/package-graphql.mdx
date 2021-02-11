@@ -33,45 +33,47 @@ kernel.addBundle(new GraphQLBundle());
 ```typescript
 import { Loader } from "@kaviar/graphql-bundle";
 
-// Without Kaviar Bundles
-const loader = new Loader();
-// Or inside prepare() phase of your Bundle
-const loader = container.get<Loader>(Loader);
+class AppBundle extends Bundle {
+  async init() {
+    // Or inside prepare() phase of your Bundle
+    const loader = this.container.get(Loader);
 
-loader.load({
-  // Can also be array of strings
-  typeDefs: `
-    type Query {
-      sayHello: String
-    }
-  `,
+    loader.load({
+      // Can also be array of strings
+      typeDefs: `
+        type Query {
+          sayHello: String
+        }
+      `,
 
-  // Can also be array of resolvers
-  resolvers: {
-    Query: {
-      sayHello: () => "Hello world!",
-    },
-  },
+      // Can also be array of resolvers
+      resolvers: {
+        Query: {
+          sayHello: () => "Hello world!",
+        },
+      },
 
-  // Can also be array of objects
-  schemaDirectives: {
-    name: MyDirective,
-  },
+      // Can also be array of objects
+      schemaDirectives: {
+        name: MyDirective,
+      },
 
-  // Can be array of functions, we recommend to name your functions
-  // So when it fails you can at least identify easily from where
-  contextReducers: async function processNewVariables(context) {
-    return {
-      ...context,
-      newVariable: "newValue",
-    };
-  },
-});
+      // Can be array of functions, we recommend to name your functions
+      // So when it fails you can at least identify easily from where
+      contextReducers: async function processNewVariables(context) {
+        return {
+          ...context,
+          newVariable: "newValue",
+        };
+      },
+    });
+  }
+}
 ```
 
 ## Getting it all together
 
-This would happen when you want to instantiate your server
+This would happen when you want to instantiate your server:
 
 ```typescript
 const {
