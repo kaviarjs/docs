@@ -14,7 +14,7 @@
     "classnames": "^2.2.6",
     "docusaurus-plugin-sass": "^0.1.11",
     "react": "^16.14.0",
-    "react-dom": "^16.14.0",
+    "react-dom": "^17.0.1",
     "react-icons": "^3.11.0"
   },
   "browserslist": {
