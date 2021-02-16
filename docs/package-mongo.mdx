@@ -5,7 +5,7 @@ title: MongoDB
 
 import { PackageHeader } from "@site/src/components/PackageHeader";
 
-<PackageHeader version="1.1.0" packageName="mongo-bundle" containsTypeDefs />
+<PackageHeader version="1.1.1" packageName="mongo-bundle" containsTypeDefs />
 
 The MongoBundle offers integration with MongoDB database by allowing you to hook into events, giving ability to work with model classes and add behaviors (such as timestampable, blameable). As well it is integrated with `@kaviar/nova` package which allows extremely rapid queries for relational data.
 
@@ -106,9 +106,14 @@ Events also receive a `context` variable. Another difference from classic MongoD
 
 ## Integration with Nova
 
-For fetching we use Nova. And the concept is simple:
+### Basics
+
+For fetching we use [Nova](https://www.kaviarjs.com/docs/package-nova). And the concept is simple:
 
 ```typescript
+// Fetch it from the container
+const usersCollection = container.get(UsersCollection);
+
 usersCollection.query({
   $: {
     filters: {
@@ -160,6 +165,29 @@ postsCollection.query({
   },
 });
 ```
+
+### GraphQL
+
+If you are looking to write a [Nova Query](https://www.kaviarjs.com/docs/package-nova#graphql-integration) in your GraphQL resolvers you can do:
+
+```ts
+const resolvers = {
+  Query: {
+    posts(_, args, ctx, ast) {
+      const postsCollection = ctx.container.get(PostsCollection);
+
+      return postsCollection.queryGraphQL(ast, {
+        // These are the AstToQueryOptions presented in the link above as: Nova Query
+        filters: {
+          isApproved: true,
+        },
+      });
+    },
+  },
+};
+```
+
+If you want the query to return a single element, a short-hand function is `postsCollection.queryOneGraphQL()`.
 
 ## Behaviors
 
