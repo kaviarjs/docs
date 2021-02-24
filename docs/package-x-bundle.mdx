@@ -5,7 +5,7 @@ title: Server Tools
 
 import { PackageHeader } from "@site/src/components/PackageHeader";
 
-<PackageHeader version="1.3.11" packageName="x-bundle" containsTypeDefs />
+<PackageHeader version="1.3.13" packageName="x-bundle" containsTypeDefs />
 
 The X-way is a set of tools that beautifully bridges the gap between your API Layer (GraphQL), your database (MongoDB), and your service layer. It is thought with fast-prototyping in mind but code scalability as well.
 
@@ -534,7 +534,7 @@ You also have the ability to have a counter subscription:
 
 ```graphql
 type Subscription {
-  users(body: EJSON): SubscriptionCountEvent
+  usersCount(body: EJSON): SubscriptionCountEvent
 }
 ```
 
