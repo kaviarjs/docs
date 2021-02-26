@@ -69,9 +69,7 @@ function Home() {
         <div className="container">
           <embed src="/img/logo.svg" height="100px" alt="Kaviar Logo" />
           <p className="hero__subtitle">
-            The Fullstack Typescript Framework for
-            <br />
-            Web Developers
+            creating rapid web applications that scale
             <br />
           </p>
           <div className={styles.buttons}>
