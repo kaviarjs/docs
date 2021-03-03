@@ -5,7 +5,7 @@ title: Server Tools
 
 import { PackageHeader } from "@site/src/components/PackageHeader";
 
-<PackageHeader version="1.3.13" packageName="x-bundle" containsTypeDefs />
+<PackageHeader version="1.4.0" packageName="x-bundle" containsTypeDefs />
 
 The X-way is a set of tools that beautifully bridges the gap between your API Layer (GraphQL), your database (MongoDB), and your service layer. It is thought with fast-prototyping in mind but code scalability as well.
 
@@ -408,6 +408,15 @@ export default {
 
 With LiveData you can subscribe and receive notifications when things change in the MongoDB database.
 
+```ts title="kernel.ts"
+new XBundle({
+  live: {
+    // This will log what changes are sent, received, and what gets updated
+    debug: true,
+  },
+});
+```
+
 ### Behaviors
 
 Collections need to emit messages when a mutation (insert/update/remove) happens in the system. We do this by attaching a behavior to it.
@@ -420,6 +429,20 @@ class PostsCollection extends Collection {
     Behaviors.Live()
   ]
 }
+```
+
+### Disable
+
+If you have large updates that don't require reactivity, disable it to save performance.
+
+```ts
+const postsCollection = container.get(PostsCollection);
+
+postsCollection.updateOne(_id, modifier, {
+  live: {
+    disable: true,
+  },
+});
 ```
 
 ### Create a subscription
@@ -561,6 +584,17 @@ export default {
       resolve: (payload) => payload,
       subscribe: [X.ToSubscription(collectionClass)],
     },
+    // Default resolver works for argument signature: { body: EJSON }
+    usersSubscription: {
+      resolve: (payload) => payload,
+      subscribe: [
+        X.ToSubscription(collectionClass, (_, args) => {
+          // Here you can use intersectBody from @kaviar/nova to perform smart operations
+          // return intersectBody(args.body, allowedBody)
+          return args.body;
+        }),
+      ],
+    },
     // Default resolver works for argument signature: { filters: EJSON }
     usersSubscriptionsCount: {
       resolve: (payload) => payload,
@@ -569,3 +603,87 @@ export default {
   },
 };
 ```
+
+### Deployment & Customisation
+
+When you deploy on more than one server, you need a way to communicate for live data. You have the built-in redis tool:
+
+```ts
+new XBundle({
+  live: {
+    // Keep redis in your network's infrastructure for fast speeds
+    // More about options here: https://github.com/NodeRedis/node-redis#rediscreateclient
+    redis: {
+      host: "127.0.0.1",
+      port: 6379,
+    },
+  },
+});
+```
+
+If redis connection dies, once it gets reconnected all the "live queries" will be requeried from the database automatically.
+
+While Redis is nice, we also allow you to use your own custom messenger, which implements the exported interface `IMessenger`.
+
+```ts
+import { Service } from "@kaviar/core";
+import { IMessenger, XBundle, MessageHandleType } from "@kaviar/x-bundle";
+
+@Service()
+class AppMessenger implements IMessenger {
+  // To implement the methods below.
+  subscribe(channel: string, handler: MessageHandleType);
+  unsubscribe(channel: string, handler: MessageHandleType);
+  // Keep in mind data can be anything, you need to ensure serialisation/deserialisation yourself.
+  publish(channels: string[], data);
+}
+
+new XBundle({
+  live: {
+    messengerClass: AppMessenger,
+  },
+});
+```
+
+### Scaling
+
+When you subscribe for elements by `_id` or a list of ids. It's incredibly scalable because you listen to events on their dedicated channel, example: `posts:{postId}`, so you don't have to worry at all about that. Redis server scales and it can handle 300,000 messages/second.
+
+The scaling problem happens on lists, for example, you want to listen to a list of messages in a certain thread. When we are subscribing to lists (aka live collection views), we are listening to events on the collection channel, example: `posts`. All updates, inserts, removes which happen in `posts`, will reach all servers.
+
+While this can work for a while, it breaks when you have chatty collections when a lot of mutations happen on it.
+
+To do so, we need to add focus to the live data by using custom channels.
+
+Let's take the example of comments on a post:
+
+```ts
+const postCommentsCollection = container.get(PostCommentsCollection);
+
+postCommentsCollection.insertOne(comment, {
+  context: {
+    live: {
+      // Note: this will also push to `comments` and `comments::${commentId}`
+      channels: [`posts::${postId}::comments`],
+    },
+  },
+});
+
+// And for your GQL resolver, or whatever, pass the next argument the options:
+const resolvers = {
+  postCommentsSubscription: {
+    subscribe: X.ToSubscription(
+      CommentsCollection,
+      // Resolve body
+      null,
+      (_, args) => {
+        return {
+          channels: [`posts::${args.postId}::comments`]
+        }
+      }
+    );
+  },
+};
+```
+
+Be careful with live-data, use it sparingly and only when you need it, this will ensure that your app is scalable for a long time. Keep in mind that the most dangerous subscriptions are the ones that listen to the main collection channels. You shouldn't be worried if you have 10 mutations per second, which happens only after a certain scale either way.

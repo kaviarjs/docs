@@ -5,7 +5,7 @@ title: UI Tools
 
 import { PackageHeader } from "@site/src/components/PackageHeader";
 
-<PackageHeader version="1.4.1" packageName="x-ui" containsTypeDefs />
+<PackageHeader version="1.4.5" packageName="x-ui" containsTypeDefs />
 
 This bundle is a set of tools allowing you to do beautiful frontends. Using the X-Framework.
 
@@ -361,18 +361,115 @@ postsCollection.deleteOne(postId).then(() => {
 });
 ```
 
-### Extensions
+### Extending Collections
 
-Why not put all related logic for fetching data for that collection inside it?
+If you want to add additional collection specific logic, it would be advisable to put it in the class itself. This would allow you to re-use the code as you need it.
 
 ```ts
 class PostsCollection extends Collection<Post> {
-  findAllApprovedPosts() {
+  findAllApprovedPosts(): Promise<Post[]> {
     // You have access to apolloClient inside it
-    // this.apolloClient.query()
+    return this.apolloClient
+      .query({
+        query: gql`...`,
+        variables: {},
+      })
+      .then((response) => {
+        return response.data.queryName;
+      });
   }
 }
 ```
+
+### Hooks
+
+Integration with React is seamless and painless:
+
+```tsx
+import { useData, useLiveData, useDataOne, useLiveDataOne } from "@kaviar/x-ui";
+
+function PostsList() {
+  const { data: posts, isLoading, error } = useData(
+    PostsCollection,
+    {
+      // Query options
+      filters: {},
+      options: {},
+    },
+    {
+      // The request body
+      _id: 1,
+      title: 1,
+      comments: {
+        text: 1,
+      },
+    }
+  );
+  // render the posts
+}
+```
+
+If you are expecting a single post, we also have an easy find by \_id solution:
+
+```tsx
+const { data: post, isLoading, error } = useDataOne(
+  PostsCollection,
+  new ObjectId(props.id),
+  body
+);
+```
+
+## Live Data
+
+If you want to use the smart live data, just swap `useData()` with `useLiveData()` and it will magically work, your data will be listening to changes.
+
+```ts
+import { useLiveData } from "@kaviar/x-ui";
+
+const LiveDataPage = () => {
+  const { data: posts, isLoading, error } = useLiveData(
+    PostsCollection,
+    {
+      filters: {},
+      options: {},
+    },
+    requestBody
+  );
+
+  // or single element
+  const { data: post, isLoading, error } = useLiveDataOne(
+    PostsCollection,
+    new ObjectId(id),
+    requestBody
+  );
+};
+```
+
+You can also hook into the events, via the 4th argument, options:
+
+```ts
+useLiveData(collectionClass, options, body, {
+  onReady() {
+    // Do something when all data has been initially loaded
+  },
+  onError(error: Error) {
+    // Handle if subscription throws out an error
+  },
+  onChanged(document, changeSet, previousDocument) {
+    // Do something when something about the subscription changes
+  },
+  onRemoved(document) {
+    // Do something when document is removed
+  },
+  onAdded(document) {
+    // Do something when document is added
+  },
+});
+```
+
+:::caution
+When using live data and relations, it is by design to not have reactivity at nested levels. For example if someone updates the comments' text it won't trigger a reactive change. Instead you will have to create separate component that subscribes to that comment via `useLiveData()`.
+:::
 
 ## Integration with Smart
 
@@ -472,13 +569,121 @@ api.updateSort({
 
 ## Guardian
 
-:::caution
-To be documented
-:::
+The guardian is a smart that communicates with the server, providing authentication methods for `register`, `login`, `logout`, `changePassword`, `forgotPassword`, resetPassword, verify email.
 
-You now have the complete toolbelt to have smart authentication, works without any effort with X-Framework Server.
+Explore the examples [in this boilerplate](https://githubs1.com/kaviarjs/x-boilerplate/tree/main/microservices/ui/src/bundles/UIAppBundle/pages/Authentication)
 
-See how it has been implemented [in the boilerplate](https://github.com/kaviarjs/x-boilerplate/tree/main/microservices/ui/src/bundles/UIAppBundle/pages/Authentication)
+It also handles fetching the user data using the `me` standard query, but this behavior can be later changed.
+
+Basic usage:
+
+```tsx
+function Component() {
+  const guardian = useGuardian();
+  const router = useRouter();
+
+  onLogin = () {
+    guardian.login("username", "password").then(result => {
+      router.go(HOME)
+    })
+  }
+}
+```
+
+Let's use guardian in our components
+
+```tsx
+function TopBar() {
+  const guardian = useGuardian();
+
+  const {
+    // This happens on first page load, if the Guardian has finished reading the token and fetching the user (if exists)
+    initialised,
+    isLoggedIn,
+    // This happens when Guardian initialises and the stored token has expired and can no longer be used
+    hasInvalidToken,
+    // This is true after logging in, or when initialising we fetch the user via me() query
+    // This gets false after the me() query has returned or errored
+    fetchingUserData,
+    user,
+  } = guardian.state;
+
+  // In this realm the component will re-render automatically if the user logs in, just use the variables from state.
+
+  // it checks for roles: []
+  const isAdmin = guardian.hasRole(Roles.ADMIN);
+}
+```
+
+The user type is the default one from `XPasswordBundle`:
+
+```ts
+type GuardianUserType = {
+  _id: string | object | number;
+  profile: {
+    firstName: string;
+    lastName: string;
+  };
+  roles: string[];
+  email: string;
+};
+```
+
+### Extending the Guardian
+
+There are several reasons you would want to extend the guardian, most popular being
+
+1. Change registration input
+2. Fetch different set of data of the logged in user
+
+```ts
+import {
+  GuardianSmart,
+  GuardianUserType,
+  GuardianUserRegistrationType,
+} from "@kaviar/x-ui";
+
+// configure your types, optionally extend the default guardian user types we imported
+const AppUserType =
+  GuardianUserType &
+  {
+    profile: {
+      fullName: string,
+      gamerScore: number,
+    },
+  };
+
+class AppGuardianSmart extends GuardianSmart<AppUserType, AppRegistrationType> {
+  retrieveUser(): Promise<AppUserType> {
+    // you have access to this.authenticationToken
+    this.apolloClient
+      .query({
+        // custom query
+      })
+      .then((response) => {
+        return response.data.me;
+      });
+  }
+}
+```
+
+We specify this class when we initialise `XUIBundle()`:
+
+```tsx
+new XUIBundle({
+  guardianClass: AppGuardianSmart,
+});
+```
+
+The `register` calls the `registration` mutation with the GraphQL input: `RegistrationInput`. It's enough to change the input on the server-side by overriding `registration` mutation in `XPasswordBundle`.
+
+However if you want to extend the interface of `Guardian`, meaning you add other methods or add other variables to the existing methods, then besides overriding the `guardianClass` you need to create your own hook, to benefit of autocompletion.
+
+```tsx
+const appGuardian = (): AppGuardianSmart => {
+  return useGuardian() as AppGuardianSmart;
+};
+```
 
 ## Events
 
@@ -486,52 +691,12 @@ You can use the classic `EventManager` to emit events, but if you want to have a
 
 ```tsx title="Emitting Events"
 import { useListener, useEventManager } from "@kaviar/x-ui";
+
 const eventManager = useEventManager();
 eventManager.emit(new XEvent());
 
 // The built-in hook lets you listen to events while the component is mounted
-useListener(XEvent, (e: XEvent) => {
+useListener(XEvent, (e) => {
   // lives as long as the component lives
-});
-```
-
-## Live Data
-
-It's easy as:
-
-```ts
-import { useCollectionSubscription } from "@kaviar/x-ui";
-
-const MyLivePage = () => {
-  const [posts, isReady] = useCollectionSubscription(PostsCollection, {
-    // The full specced body
-    $: {
-      filters: {},
-      options: {}
-    }
-    title: 1,
-  });
-
-  // Render the posts if isReady
-  //
-};
-```
-
-You can also hook into the events, via the 3rd argument, options:
-
-```ts
-useCollectionSubscription(collectionClass, body, {
-  onReady() {
-    // Do something when all data has been initially loaded
-  },
-  onChanged(document, changeSet, previousDocument) {
-    // Do something when something about the subscription changes
-  },
-  onRemoved(document) {
-    // Do something when document is removed
-  },
-  onAdded(document) {
-    // Do something when document is added
-  },
 });
 ```
