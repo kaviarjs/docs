@@ -332,6 +332,43 @@ Counting documents is also easy:
 postsCollection.count(filters).then((count) => {});
 ```
 
+### Transformers
+
+This will transform the fetched result however you prefer, you can either instantiate a class with it using something like `class-transformers` package, or just modify certain fields.
+
+What we normally recommend is do this for `_id` which are `ObjectId` and to transform numbers to `Date` for fields which are dates. Note it will only perform transformation if the response is not `undefined`.
+
+```ts
+import { ObjectId } from "@kaviar/ejson";
+
+class PostsCollection extends Collection<Post> {
+  getTransformMap() {
+    return {
+      _id: (v) => new ObjectId(v),
+      tagIds: (v) => v.map((v) => new ObjectId()),
+      createdAt: (v) => new Date(v),
+    };
+  }
+}
+```
+
+To be able to perform deep transformation when fetching elements with relations, we need to define the links:
+
+```ts
+class PostsCollection extends Collection<Post> {
+  getLinks() {
+    return [
+      {
+        name: "tags",
+        collection: () => TagsCollection,
+        many: true, // use false or omit for single relationships
+        field: "tagIds", // if you are dealing with an inversed relationship
+      },
+    ];
+  }
+}
+```
+
 ### Mutations
 
 We have made the decision to not allow multi document updates or insertions due to security concerns. This is why we can only insert a single document, update document by \_id, and remove it also by \_id:

@@ -5,7 +5,7 @@ title: Core
 
 import { PackageHeader } from "@site/src/components/PackageHeader";
 
-<PackageHeader version="1.1.6" packageName="core" containsTypeDefs />
+<PackageHeader version="1.1.7" packageName="core" containsTypeDefs />
 
 A powerful and lightweight module composition strategy responsible for orchestrating your logic, enabling you to easily respect SOLID principles within your infinitely scalable app.
 
@@ -89,9 +89,9 @@ Now let's say the `databaseService` needs some credentials and a host to connect
 container.set("database_uri", process.env.DATABASE_URI);
 
 class DatabaseService {
-  constructor(@Inject("database_uri") databseUri) {
+  constructor(@Inject("database_uri") databaseUri) {
     // Just a sample for illustration
-    // this.client = mongodb.connect(databaseUri);
+    this.client = mongodb.connect(databaseUri);
   }
 }
 ```
