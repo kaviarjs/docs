@@ -33,12 +33,12 @@ module.exports = {
           label: "Docs",
           position: "left",
         },
-        // {
-        //   to: "devnet/",
-        //   activeBasePath: "devnet",
-        //   label: "DevNet",
-        //   position: "left",
-        // },
+        {
+          to: "excel2app/",
+          activeBasePath: "excel2app",
+          label: "Excel 2 App",
+          position: "left",
+        },
         // {
         //   href: "https://www.reddit.com/r/KaviarJS",
         //   label: "Reddit",

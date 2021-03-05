@@ -109,6 +109,15 @@ function Home() {
           git clone https://github.com/kaviarjs/x-boilerplate
         </div>
       </div>
+      <div className="dark-section">
+        <h1>Want to start fast from an Excel Spreadsheet?</h1>
+        <Link
+          className="button button--lg button--primary"
+          to={useBaseUrl("excel2app/")}
+        >
+          Find out more
+        </Link>
+      </div>
       <ComparisonFrameworks />
       {/* <main className="explained-container">
         <h1>So, what can it do?</h1>
