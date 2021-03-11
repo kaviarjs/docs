@@ -33,6 +33,7 @@ module.exports = {
           label: "Docs",
           position: "left",
         },
+        { to: "blog", label: "Blog", position: "left" }, // or position: 'right'
         {
           to: "excel2app/",
           activeBasePath: "excel2app",
@@ -119,6 +120,10 @@ module.exports = {
         theme: {
           disableSwitch: true,
           customCss: require.resolve("./src/css/main.scss"),
+        },
+        feedOptions: {
+          type: "all",
+          copyright: `Copyright © ${new Date().getFullYear()} KAVIAR DEVELOPMENT GROUP.`,
         },
       },
     ],

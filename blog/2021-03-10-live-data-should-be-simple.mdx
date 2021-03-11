@@ -1,0 +1,215 @@
+---
+title: Live Data should be Simple
+author: Theodor Diaconu
+author_title: Creator of Kaviar
+author_url: https://github.com/theodorDiaconu
+tags: [livedata, mongodb, kaviar]
+description: How we simplified Live Data so you don't have to worry about it.
+image: https://i.imgur.com/vMhdSjr.jpg
+hide_table_of_contents: false
+---
+
+In this post, we're going to explore how easy it is to have live data that reflects the current view of the database. Let's take together a closer look of how Live Data is being handled in the X-Framework.
+
+<!--truncate-->
+
+## What is Live Data ?
+
+There can be many terms for it, reactive data, real-time, you name it. They all might refer to the same thing, the data you see is the actual up to date data, meaning you won't have to refresh the page to see it.
+
+Live Data can be achieved either through polling or through websockets. There are advantages and disadvantages to both approaches, however in our case we're using Websockets.
+
+## Inspiration
+
+When [Meteor](https://www.meteor.com) launched, their live data solution has blown me away as a programmer, I knew before how websockets worked, I've implemented my own solutions for live data, but seeing it so seamlessly
+and easily done has shocked me and left me contemplating and challenging my assumptions about programming and general.
+
+Their idea was something like this:
+
+```ts
+// SERVER-SIDE
+// Returning a Mongo cursor on the server
+Meteor.publish({
+  posts(args) {
+    // PostsCollection is an instance of a Meteor-specific wrapper for MongoDB Collections
+    return PostsCollection.find(filters);
+  },
+});
+
+// CLIENT-SIDE
+// Using it on the client
+Meteor.subscribe("posts", args);
+
+// CLIENT-SIDE
+// Use the collection as if it's from the database
+// Client-side collections are isomorphic with Server-side ones
+// This would trigger re-renders everytime a post changed.
+PostsCollection.find().fetch();
+```
+
+The code above states something like:
+
+- Through `publish` I'm giving you access to this set of data
+- Through `subscribe` you're explictly stating what data you need to see in real-time
+- Through client-side collections you interogate the data you are subscribed to
+
+This solution is just beautiful. You don't have to think about all the intricancies of how everything works, it just works.
+
+It works with different filters/views such as:
+
+```ts
+return PostsCollection.find({ isApproved: true });
+return PostsCollection.find({ _id: "XXX" });
+return PostsCollection.find(
+  { isApproved: true },
+  {
+    limit: 5,
+    sort: {
+      createdAt: -1,
+    },
+  }
+);
+```
+
+While their solution was clean and beautiful it had the following problems:
+
+1. Data collision. If I subscribe to the same collection, when I do the `find()`,
+   without propper filters in it I may receive both data sets.
+2. No relational support. Let's face it, in an app, few are the collections that aren't linked with anything,
+   doing relational reactive data was a pain to do, and while solved by
+   [Grapher](https://github.com/cult-of-coders/grapher)
+   (a library I wrote) it was very unperformant.
+3. Scalability. Meteor was using MongoDB oplog (a place where all mutations get pushed) for tracing changesets. This means that at some point your instances will be busy reading and processing the oplog. I was the one who solved this problem through [RedisOplog](https://github.com/cult-of-coders/redis-oplog) and enabled all Meteor users to scale.
+4. Compatibility. They were using DDP protocol which was only specific to Meteor, and there was no official solution on NPM or something so we could have used this reactivity seamlessly from other platforms.
+
+We have addressed all of the problems above and came up with a scalable solution:
+
+1. Data collision. Each subscription has an individual data-set.
+2. Supports relations out of the box
+3. Scales infinitely. Knowledge acquired from [RedisOplog](https://github.com/cult-of-coders/redis-oplog) has been put in here.
+4. Widely compatible by using GraphQL Subscriptions standard.
+
+## Usage
+
+First of all you can find an working example in the [x-boilerplate](https://github.com/kaviarjs/x-boilerplate) so you can start playing with it.
+
+Let's explore our API a little bit starting from the server. [Looks more elegant in the boilerplate](https://github1s.com/kaviarjs/x-boilerplate/blob/main/microservices/api/src/bundles/AppBundle/graphql/subscriptions/postsSubscription.resolvers.ts)
+
+```ts
+// PS: this is much more elegant
+import * as X from "@kaviar/x-bundle";
+import { Collection } from "@kaviar/mongo-bundle";
+
+// Our wrapper for Mongo Collections + TypeSafety
+class PostsCollection extends Collection {
+  static collectionName = "posts";
+
+  static behaviors = [X.Behaviors.Live()];
+}
+
+// Read more: https://kaviarjs.com/docs/package-x-bundle#live-data
+const resolvers = {
+  Subscription: {
+    postsSubscription: {
+      resolve: (payload) => payload,
+      subscribe: X.ToSubscription(PostsCollection),
+    },
+  },
+};
+
+const typeDefs = `
+  type Subscriptions {
+    postsSubscription(body: EJSON): SubscriptionEvent!
+  }
+`;
+```
+
+Now that we've set everything up, on the client it's very easy:
+
+```ts
+import { Collection } from "@kaviar/x-ui";
+
+class PostsCollection extends Collection<Post> {
+  getName() {
+    return "posts";
+  }
+}
+
+// Read more: https://kaviarjs.com/docs/package-x-ui#live-data
+function LiveDataPage() {
+  const { data: posts, isLoading, error } = useLiveData(
+    PostsCollection,
+    {
+      filters: {},
+      options: {},
+    },
+    {
+      title: 1,
+      // Relational queries
+      comments: {
+        text: 1,
+        author: {
+          fullName: 1,
+        },
+      },
+    }
+  );
+
+  // Alternative: useLiveDataOne(collection, _id, body) for single documents
+}
+```
+
+That was it, that's how easy it is to setup live data with React & X-Framework:
+
+1. You setup the `postsSubscription` on server
+2. You use the built-in hooks: `useLiveData` or `useLiveDataOne`
+
+You can easily switch between live data and non-live data by simply using `useData` instead of `useLiveData`. They have the same signature which makes it perfect for the developer to use and easily change depending on use-cases.
+
+## How does it work?
+
+If you want live data on collections you'll have to add the `X.Behaviors.Live()` behavior which basically allows the collection to emit mutation events to the Messenger. For example:
+
+- We detected a new insertion for `collection` with this `_id`
+- We detected a new removal for `collection` with this `_id`
+- This `collection document` with this `id` has updated the following fields: `["f1", "f2"]`
+
+Without adding this behavior, live data will not work as expected, you can ofcourse subscribe and fetch the data, but any change that happens afterwards will not be triggered.
+
+The messenger is a pubsub system. In layman's terms it's a distributed event manager. While you are developing locally we are using an in-memory one, however if you deploy and have more than one backend server, you have to
+move to a distributed one. Redis Messenger is built-in but you are not bound to it. [Here](https://kaviarjs.com/docs/package-x-bundle#deployment--customisation) you will see that you can implement your own custom communication channel.
+
+On the processing side what happens on the server is this:
+
+1. We get the request from the client stating it wants to subscribe
+2. We create an in-memory collection with current data-set and we watch the communications channel
+3. If we get updates, we check if we can update accordingly and send `patch` events downstream to the client
+
+We have some nice optimisations here such as:
+
+1. If two users subscribe to the same "publication" it will get re-used
+2. When subscribing to document id or ids, it's very efficient to just patch the data.
+
+## Conclusion
+
+Live data should be simple and scalable. We want to enable developers to have live reactive data without polling and without thinking to much about it, we want it to just work and deliver amazing experiences to their customers.
+
+We recommend to check it out:
+
+```bash
+git clone git@github.com:kaviarjs/x-boilerplate.git live
+cd live ; scripts/setup.sh
+```
+
+And run both the api and ui microservices:
+
+```bash
+npm run start:api
+# In another terminal
+npm run start:ui
+```
+
+## Give a star to Kaviar
+
+Dear developer, we at Kaviar are working to solve the hard problems of web-development. It would be helpful for us to get traction and allow other developers
+to discover Kaviar. So, [give a star, to Kaviar](https://github.com/kaviarjs/kaviar)!
