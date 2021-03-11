@@ -51,8 +51,8 @@ module.exports = {
           position: "right",
         },
         {
-          href: "https://forms.gle/DTMg5Urgqey9QqLFA",
-          label: "Give us feedback",
+          href: "https://discord.gg/GmNeRDqxvp",
+          label: "Discord",
           position: "right",
         },
       ],
@@ -81,8 +81,8 @@ module.exports = {
               href: "https://stackoverflow.com/questions/tagged/kaviarjs",
             },
             {
-              label: "Reddit",
-              href: "https://reddit.com/r/KaviarJS",
+              label: "Discord",
+              href: "https://discord.gg/GmNeRDqxvp",
             },
           ],
         },
@@ -91,7 +91,7 @@ module.exports = {
           items: [
             {
               label: "GitHub",
-              href: "https://github.com/kaviarjs/docs",
+              href: "https://github.com/kaviarjs/kaviar",
             },
             {
               label: "Newsletter",
