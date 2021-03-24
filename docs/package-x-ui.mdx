@@ -5,7 +5,7 @@ title: UI Tools
 
 import { PackageHeader } from "@site/src/components/PackageHeader";
 
-<PackageHeader version="1.4.5" packageName="x-ui" containsTypeDefs />
+<PackageHeader version="1.4.8" packageName="x-ui" containsTypeDefs />
 
 This bundle is a set of tools allowing you to do beautiful frontends. Using the X-Framework.
 
@@ -74,7 +74,7 @@ import { Bundle } from "@kaviar/core";
 
 export class UIAppBundle extends Bundle {
   async init() {
-    const router = this.get<XRouter>(XRouter);
+    const router = this.container.get(XRouter);
 
     router.add({
       HOME: {
@@ -116,10 +116,12 @@ And now simply add them in your bundle like this:
 import * as Routes from "./routes";
 
 // The function from the Bundle
-async function init() {
-  const router = this.get<XRouter>(XRouter);
+class UIAppBundle extends Bundle {
+  async init() {
+    const router = this.container.get(XRouter);
 
-  router.add(Routes);
+    router.add(Routes);
+  }
 }
 ```
 

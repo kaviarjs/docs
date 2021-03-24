@@ -250,6 +250,36 @@ await usersCollection.insertOne(
 
 If you need to access the container, for example, you want to log the events into an external service you can access the container via `collection.container`.
 
+### Creating Behaviors
+
+The `behavior` is a function that take in the collection's instance and performs manipulation on it, b
+y either hooking to events or overriding/extending its methods.
+
+Each collection has it's own event manager in which it dispatches events. When adding behaviors it would be great to use the `localEventManager`.
+
+```ts
+const DeadSimpleTimestampable = () => {
+  return (collection: Collection) => {
+    collection.localEventManager.addListener(
+      // These are the standard events that also get into the global event manager
+      BeforeInsertEvent,
+      (e: BeforeInsertEvent) => {
+        const document = e.data.document;
+        const now = new Date();
+
+        Object.assign(document, {
+          createdAt: now,
+        });
+      }
+    );
+  };
+};
+
+class MyCollection extends Collection {
+  static behaviors = [DeadSimpleTimestampable()];
+}
+```
+
 ## Models
 
 If we need to have logicfull models then it's easy. We are leveraging the power of `class-transformer` to do exactly that.
