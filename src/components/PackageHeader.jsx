@@ -8,11 +8,11 @@ export function PackageHeader({
 }) {
   return (
     <div className="package-header-container">
-      {containsTypeDefs && (
+      {/* {containsTypeDefs && (
         <a href={`/type-docs/${packageName}/`} target="_blank" className="link">
           Type Docs
         </a>
-      )}
+      )} */}
       <a
         href={`https://github.com/kaviarjs/${packageName}`}
         target="_blank"
