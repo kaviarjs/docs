@@ -1,0 +1,74 @@
+---
+id: package-x-ui-admin
+title: Administration
+---
+
+import { PackageHeader } from "@site/src/components/PackageHeader";
+
+<PackageHeader version="1.1.4" packageName="x-ui-admin" containsTypeDefs />
+
+This is the place where you configure your enterprise level applications Administration interface. This bundle makes use of `@kaviar/x-ui`, so it is best if you familiarise yourself with it first.
+
+This bundle uses `Ant Design` to leverage its Admin interface. Allowing you to focus on creating Menu Routes that can be role-dependent. This enables `Wordpress-like` functionality where external bundles that you just add to your `Kernel` extend the menu nicely.
+
+## Basics:
+
+```tsx
+// kernel
+
+kernel.addBundles([new XUIBundle(), new XUIAdminBundle()]);
+```
+
+## UI
+
+Let's explore a bit about the structure, by creating our first layout:
+
+```tsx title="components/Layout.tsx"
+import { useUIComponents } from "@kaviar/x-ui";
+
+// This is to illustrate how you can have a custom layout:
+function Dashboard() {
+  const Components = useUIComponents();
+
+  return (
+    <Components.AdminLayout content={}>
+      <h1>Hello world!</h1>
+    </Components.AdminLayout>
+  );
+}
+```
+
+Now we need to create a route, and because we don't rely on strings for routing, we should read them from a separate place, and register them in our bundle:
+
+```tsx title="routes.ts"
+import { IRoute } from "@kaviar/x-ui";
+
+export const DASHBOARD = {
+  label: "", // By default it's "Dashboard" (capitalise each word, and removes _)
+  path: "/dashboard",
+  component: Dashboard,
+  // optionally require certain roles
+  roles: [Roles.ADMIN],
+  menu: {
+    icon: "RightOutlined", // Use any from: https://ant.design/components/icon/
+    path: "Administration.Users",
+    // If there is already an "Administration" path, it will get extended
+    order: 0, // If you want it to hold priority. The menus will be sorted by order, otherwise, by the order they have been added into the menu
+  },
+};
+```
+
+This is done only once, but ensure you load your routes in bundle init:
+
+```ts
+// In your bundle:
+import * as Routes from "./routes";
+
+export class UIAppBundle extends Bundle {
+  async function init() {
+    const router = this.container.get(XRouter);
+
+    router.add(Routes);
+  }
+}
+```

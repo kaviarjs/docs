@@ -27,10 +27,6 @@ export const map: IElementMap = {
       id: "framework-introduction",
       title: "Introduction",
     },
-    {
-      id: "framework-roadmap",
-      title: "Roadmap",
-    },
   ],
   Foundation: [
     {
@@ -133,32 +129,53 @@ export const map: IElementMap = {
       title: "Introduction",
     },
     {
-      id: "x-bundle",
-      title: "Server Tools",
-      package: "x-bundle",
-      typeDocs: true,
+      groupLabel: "Server",
+      elements: [
+        {
+          id: "x-bundle",
+          title: "Core",
+          package: "x-bundle",
+          typeDocs: true,
+        },
+        {
+          id: "x-generator-bundle",
+          title: "Command-line",
+          package: "x-generator-bundle",
+          typeDocs: true,
+        },
+        {
+          id: "x-password-bundle",
+          title: "Passwords",
+          package: "x-password-bundle",
+          typeDocs: true,
+        },
+        {
+          id: "x-framework-conventions",
+          title: "Conventions",
+        },
+      ],
     },
     {
-      id: "x-ui",
-      title: "UI Tools",
-      package: "x-ui",
-      typeDocs: true,
-    },
-    {
-      id: "x-generator-bundle",
-      title: "Command-line",
-      package: "x-generator-bundle",
-      typeDocs: true,
-    },
-    {
-      id: "x-password-bundle",
-      title: "Passwords",
-      package: "x-password-bundle",
-      typeDocs: true,
-    },
-    {
-      id: "x-framework-conventions",
-      title: "Conventions",
+      groupLabel: "UI",
+      elements: [
+        {
+          id: "x-ui",
+          title: "Core",
+          package: "x-ui",
+          typeDocs: true,
+        },
+        {
+          id: "x-ui-admin",
+          title: "Administration",
+          package: "x-ui-admin",
+          typeDocs: true,
+        },
+        {
+          id: "smart",
+          title: "Smart",
+          package: "smart",
+        },
+      ],
     },
   ],
 };

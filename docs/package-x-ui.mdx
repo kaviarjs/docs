@@ -1,6 +1,6 @@
 ---
 id: package-x-ui
-title: UI Tools
+title: Core
 ---
 
 import { PackageHeader } from "@site/src/components/PackageHeader";
@@ -738,4 +738,45 @@ eventManager.emit(new XEvent());
 useListener(XEvent, (e) => {
   // lives as long as the component lives
 });
+```
+
+## UI Components
+
+You have the ability to craft and override UI components:
+
+```ts
+function Component() {
+  const UIComponents = useUIComponents();
+
+  return <UIComponents.Loading />;
+}
+```
+
+Overriding them is done in the `init()` phase of your bundle
+
+```ts
+import { Bundle } from "@kaviar/core";
+import { XUIBundle } from "@kaviar/x-ui";
+
+class UIAppBundle extends Bundle {
+  async init() {
+    const xuiBundle = this.container.get(XUIBundle);
+    xuiBundle.updateUIComponents({
+      Loading: MyLoadingComponent,
+    });
+    // Now everywhere it's used it will render it correctly
+  }
+}
+```
+
+Creating new components is done in two steps, first we extend the interface, second we update the components as shown in the overriding phase:
+
+```ts title="defs.ts"
+import "@kaviar/x-ui";
+
+declare module "@kaviar/x-ui" {
+  export interface IComponents {
+    MyCustomOne: React.ComponentType<OptionalPropsType>;
+  }
+}
 ```

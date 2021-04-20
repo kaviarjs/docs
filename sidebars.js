@@ -2,8 +2,7 @@
 module.exports = {
   someSidebar: {
     "Meta": [
-        "framework-introduction",
-        "framework-roadmap"
+        "framework-introduction"
     ],
     "Foundation": [
         "package-core",
@@ -40,11 +39,25 @@ module.exports = {
     ],
     "X-Framework": [
         "x-framework-introduction",
-        "package-x-bundle",
-        "package-x-ui",
-        "package-x-generator-bundle",
-        "package-x-password-bundle",
-        "x-framework-conventions"
+        {
+            "type": "category",
+            "label": "Server",
+            "items": [
+                "package-x-bundle",
+                "package-x-generator-bundle",
+                "package-x-password-bundle",
+                "x-framework-conventions"
+            ]
+        },
+        {
+            "type": "category",
+            "label": "UI",
+            "items": [
+                "package-x-ui",
+                "package-x-ui-admin",
+                "package-smart"
+            ]
+        }
     ]
 }
 }
