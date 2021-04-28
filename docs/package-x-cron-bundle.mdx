@@ -5,9 +5,11 @@ title: Cronjobs
 
 import { PackageHeader } from "@site/src/components/PackageHeader";
 
-<PackageHeader version="1.0.0" packageName="x-cron-bundle"  />
+<PackageHeader version="1.0.1" packageName="x-cron-bundle"  />
 
 This tool allows you to run recurrent jobs in your X Framework ecosystem. The cronjobs which are running will have their result stored in "crons" collection.
+
+Keep in mind that if you have multiple instances deployed, the cronjob will run only once by whatever instance manages to start it first.
 
 ## Setting up
 
@@ -35,6 +37,7 @@ class AppBundle extends Bundle {
   async init() {
     const cronService = this.container.get(CronService);
     cronService.add({
+      // Names should be unique across all cronjobs
       name: "Send reminders",
       schedule(parser) {
         // Parser is an instance of Later.parse(), can be configured in many forms
