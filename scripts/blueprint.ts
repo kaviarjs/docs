@@ -144,6 +144,11 @@ export const map: IElementMap = {
           typeDocs: true,
         },
         {
+          id: "x-cron-bundle",
+          title: "Cronjobs",
+          package: "x-cron-bundle",
+        },
+        {
           id: "x-password-bundle",
           title: "Passwords",
           package: "x-password-bundle",

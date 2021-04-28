@@ -45,6 +45,7 @@ module.exports = {
             "items": [
                 "package-x-bundle",
                 "package-x-generator-bundle",
+                "package-x-cron-bundle",
                 "package-x-password-bundle",
                 "x-framework-conventions"
             ]
