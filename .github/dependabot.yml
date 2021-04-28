@@ -1,0 +1,57 @@
+version: 2
+updates:
+- package-ecosystem: npm
+  directory: "/"
+  schedule:
+    interval: monthly
+    time: "02:00"
+  open-pull-requests-limit: 10
+  ignore:
+  - dependency-name: ssri
+    versions:
+    - 6.0.2
+  - dependency-name: y18n
+    versions:
+    - 4.0.1
+  - dependency-name: "@docusaurus/core"
+    versions:
+    - 2.0.0-alpha.71
+    - 2.0.0-alpha.72
+  - dependency-name: "@docusaurus/preset-classic"
+    versions:
+    - 2.0.0-alpha.70
+    - 2.0.0-alpha.71
+    - 2.0.0-alpha.72
+  - dependency-name: lodash
+    versions:
+    - 4.17.20
+    - 4.17.21
+  - dependency-name: react-dom
+    versions:
+    - 17.0.1
+  - dependency-name: elliptic
+    versions:
+    - 6.5.3
+    - 6.5.4
+  - dependency-name: react-icons
+    versions:
+    - 4.1.0
+  - dependency-name: ini
+    versions:
+    - 1.3.7
+    - 1.3.8
+  - dependency-name: websocket-extensions
+    versions:
+    - 0.1.4
+  - dependency-name: prismjs
+    versions:
+    - 1.23.0
+  - dependency-name: react
+    versions:
+    - 16.14.0
+  - dependency-name: fs-extra
+    versions:
+    - 9.1.0
+  - dependency-name: docusaurus-plugin-sass
+    versions:
+    - 0.1.11
