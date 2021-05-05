@@ -5,7 +5,7 @@ title: Validation
 
 import { PackageHeader } from "@site/src/components/PackageHeader";
 
-<PackageHeader version="1.0.0" packageName="validator-bundle" containsTypeDefs />
+<PackageHeader version="1.0.1" packageName="validator-bundle" containsTypeDefs />
 
 This package contains a neat, TypeScript-oriented solution to validating models, creating custom validation constraints that are container-aware. It leverages the awesome [yup validation package](https://github.com/jquense/yup).
 
@@ -43,7 +43,7 @@ export class ProfileRegistrationInput {
 const validatorService = container.get(ValidatorService);
 
 validatorService.validate(dataSet, {
-  schema: UserRegistrationInput,
+  model: UserRegistrationInput,
   ...otherOptionsFromYup, // found in it's official documentation
 });
 ```
@@ -192,7 +192,7 @@ const input = {
 };
 
 const object = validatorService.validate(input, {
-  schema: PostCreateInput,
+  model: PostCreateInput,
 });
 
 // Casting has been doen automatically, if you want just casting: validatorService.cast(input)
