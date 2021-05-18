@@ -5,7 +5,7 @@ title: MongoDB
 
 import { PackageHeader } from "@site/src/components/PackageHeader";
 
-<PackageHeader version="1.1.3" packageName="mongo-bundle" containsTypeDefs />
+<PackageHeader version="1.2.0" packageName="mongo-bundle" containsTypeDefs />
 
 The MongoBundle offers integration with MongoDB database by allowing you to hook into events, giving ability to work with model classes and add behaviors (such as timestampable, blameable). As well it is integrated with `@kaviar/nova` package which allows extremely rapid queries for relational data.
 
@@ -397,10 +397,6 @@ import { Type } from "@kaviar/mongo-bundle";
 class User {
   _id: ObjectID;
   name: string;
-
-  // You need to tell class transformer what to resolve into
-  @Type(() => Comment)
-  comments: Comment[];
 }
 
 class Comment {
@@ -436,3 +432,51 @@ await dbService.transact((session) => {
 ```
 
 The beautiful thing is that any kind of exception will result in transaction revertion. If you want to have event listeners that don't fail transactions, you simply wrap them in such a way that their promises resolve.
+
+## Migrations
+
+Migrations allow you to version and easily add new changes to database while staying safe. Migrations are added in the `prepare()` phase of your bundles.
+
+```tsx
+const migrationService = this.container.get(MigrationService);
+migrationService.add({
+  version: 1,
+  name: "Do something",
+  async up(container) {
+    // Setup defaults for a certain collection
+  },
+  async down(container) {
+    // Revert the up() function, in case something goes wrong and you want to rollback
+  },
+});
+```
+
+By default migrations are run by default to latest version right after `MongoBundle` gets initialised.
+
+```ts
+const migrationService = this.container.get(MigrationService);
+
+new MongoBundle({
+  uri: "...",
+  // Take control and disable auto migration
+  automigrate: false,
+});
+
+// Control it from here
+migrationService.migrateToLatest();
+migrationService.migrateTo(version);
+```
+
+The way we handle migrations is that we store in `migrations` collection a status object containing:
+
+```ts
+export interface IMigrationStatus {
+  version: number; // The current version
+  locked: boolean;
+  lockedAt?: Date;
+  lastError?: {
+    fromVersion: number;
+    message: string;
+  };
+}
+```
