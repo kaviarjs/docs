@@ -54,6 +54,12 @@ export const map: IElementMap = {
       typeDocs: true,
     },
     {
+      id: "ejson",
+      title: "EJSON",
+      package: "ejson",
+      typeDocs: true,
+    },
+    {
       groupLabel: "Database",
       elements: [
         {
@@ -135,13 +141,11 @@ export const map: IElementMap = {
           id: "x-bundle",
           title: "Core",
           package: "x-bundle",
-          typeDocs: true,
         },
         {
           id: "x-generator-bundle",
           title: "Command-line",
           package: "x-generator-bundle",
-          typeDocs: true,
         },
         {
           id: "x-cron-bundle",
@@ -152,7 +156,11 @@ export const map: IElementMap = {
           id: "x-password-bundle",
           title: "Passwords",
           package: "x-password-bundle",
-          typeDocs: true,
+        },
+        {
+          id: "x-s3-uploads",
+          title: "Uploads",
+          package: "x-s3-bundle",
         },
         {
           id: "x-framework-conventions",
@@ -167,13 +175,11 @@ export const map: IElementMap = {
           id: "x-ui",
           title: "Core",
           package: "x-ui",
-          typeDocs: true,
         },
         {
           id: "x-ui-admin",
           title: "Administration",
           package: "x-ui-admin",
-          typeDocs: true,
         },
         {
           id: "smart",

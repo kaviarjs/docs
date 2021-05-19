@@ -9,6 +9,7 @@ module.exports = {
         "package-emails",
         "package-validator-bundle",
         "package-logger",
+        "package-ejson",
         {
             "type": "category",
             "label": "Database",
@@ -47,6 +48,7 @@ module.exports = {
                 "package-x-generator-bundle",
                 "package-x-cron-bundle",
                 "package-x-password-bundle",
+                "package-x-s3-uploads",
                 "x-framework-conventions"
             ]
         },
