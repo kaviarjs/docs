@@ -14,10 +14,12 @@ We are using [Apollo Upload scalar](https://www.apollographql.com/docs/apollo-se
 ## Setup
 
 ```bash
-npm i -S graphql-upload aws-sdk
+npm i -S graphql-upload aws-sdk @kaviar/x-s3-bundle
 ```
 
 ```ts
+import { XS3Bundle } from "@kaviar/x-s3-bundle";
+
 kernel.addBundle(
   new XS3Bundle({
     accessKeyId: "xxx",

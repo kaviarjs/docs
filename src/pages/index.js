@@ -69,7 +69,7 @@ function Home() {
         <div className="container">
           <embed src="/img/logo.svg" height="100px" alt="Kaviar Logo" />
           <p className="hero__subtitle">
-            creating rapid web applications that scale
+            fast like a prototype, scalable like enterprise
             <br />
           </p>
           <div className={styles.buttons}>
@@ -79,6 +79,12 @@ function Home() {
             >
               Start
             </Link>
+          </div>
+          <div className="backed-by-cult">
+            this project is backed by{" "}
+            <a href="https://www.cultofcoders.com" target="_blank">
+              Cult of Coders
+            </a>
           </div>
         </div>
       </header>
