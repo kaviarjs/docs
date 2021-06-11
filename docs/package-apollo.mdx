@@ -5,7 +5,7 @@ title: Apollo
 
 import { PackageHeader } from "@site/src/components/PackageHeader";
 
-<PackageHeader version="1.1.4" packageName="apollo-bundle" containsTypeDefs />
+<PackageHeader version="1.1.6" packageName="apollo-bundle" containsTypeDefs />
 
 ApolloBundle quickly bootstraps an Apollo Server within Kaviar's framework. It injects the `container` inside the context and allows you to easily create server-side routes.
 
@@ -77,7 +77,3 @@ class CoreBundle extends Bundle {
   }
 }
 ```
-
-## Listening to Exceptions
-
-There is an event that throws when an unresolved exception is raised above resolver function. That event is called `ApolloResolverExceptionEvent` and you can easily hook into it and do something when some resolver errors out, like logging, or sending a warning and so on.

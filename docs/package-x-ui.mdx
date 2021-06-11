@@ -150,6 +150,23 @@ function Component() {
 }
 ```
 
+### Authorisation
+
+The routes also support a `roles: []` option:
+
+```ts
+export const PROTECTED_VIEW = {
+  path: "/users/:_id",
+  component: ({ _id }) => <h1>Hello user {_id}!</h1>,
+  // Ensure that each user returns the 'USER' in the roles request. This basically says: you are logged in.
+  roles: ["USER"],
+};
+```
+
+An alternative would be to `useGuardian()` and check for the role.
+
+If the user doesn't have the role we render the `NotAuthorized` component. Which can be overridden.
+
 ## Dependency Injection
 
 We have succcesfully blended D.I. with React. The concept is easy, you control your container inside the `prepare()` or `init()` phase of a bundle, you use it inside React. The right container is properly passed because everything is wrapped in `<XUIProvider />`.
