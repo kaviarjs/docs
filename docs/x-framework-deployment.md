@@ -52,9 +52,9 @@ git remote add heroku-api https://git.heroku.com/api-test.git
 git push heroku-api master # or main, whichever branch you use
 ```
 
-View the logs:
-
 ### CLIENT
+
+Netlify is also a good option, but for the sake of having everything done in a consistent manner, this is how it would work with Heroku.
 
 ```
 heroku create web-test --region eu
@@ -80,3 +80,7 @@ To view the logs if something fails or the server's output:
 heroku logs --app api-test
 heroku logs --app api-test --tail # Follows the logs as they appear, useful when debugging server-side logging
 ```
+
+## Conclusion
+
+Nowadays it's free and easy to deploy your app in safe, scalable manner. We love simplicity. The full working sample can be found here: https://github.com/kaviarjs/x-boilerplate
