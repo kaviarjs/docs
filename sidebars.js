@@ -60,7 +60,8 @@ module.exports = {
                 "package-x-ui-admin",
                 "package-smart"
             ]
-        }
+        },
+        "x-framework-deployment"
     ]
 }
 }

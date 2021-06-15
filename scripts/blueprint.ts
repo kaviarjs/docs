@@ -188,5 +188,9 @@ export const map: IElementMap = {
         },
       ],
     },
+    {
+      id: "x-framework-deployment",
+      title: "Deployment",
+    },
   ],
 };
