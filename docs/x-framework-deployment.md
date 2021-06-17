@@ -32,11 +32,13 @@ We use need `heroku-buildpack-monorepo` which allows an environment variable `AP
 
 ### API
 
+Note: the order of the buildpacks matter, `heroku-buildpack-monorepo` needs to be first.
+
 ```bash
 # Just create some unique ids, and select the region "eu" or "us"
 heroku create api-test --region eu
-heroku buildpacks:add -a api-test heroku/nodejs
 heroku buildpacks:add -a api-test https://github.com/lstoll/heroku-buildpack-monorepo -i 1
+heroku buildpacks:add -a api-test heroku/nodejs
 
 # Do not rely on .env or commit it. Use heroku's own environment config variables
 heroku config:set -a api-test APP_BASE="microservices/api"
@@ -58,8 +60,8 @@ Netlify is also a good option, but for the sake of having everything done in a c
 
 ```
 heroku create web-test --region eu
-heroku buildpacks:add -a web-test heroku/nodejs
 heroku buildpacks:add -a web-test https://github.com/lstoll/heroku-buildpack-monorepo -i 1
+heroku buildpacks:add -a web-test heroku/nodejs
 ```
 
 ```bash
