@@ -6,10 +6,6 @@ module.exports = {
     ],
     "Foundation": [
         "package-core",
-        "package-emails",
-        "package-validator-bundle",
-        "package-logger",
-        "package-ejson",
         {
             "type": "category",
             "label": "Database",
@@ -36,6 +32,10 @@ module.exports = {
                 "package-apollo-security"
             ]
         },
+        "package-validator-bundle",
+        "package-logger",
+        "package-ejson",
+        "package-emails",
         "package-terminal"
     ],
     "X-Framework": [

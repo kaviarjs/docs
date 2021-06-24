@@ -36,30 +36,6 @@ export const map: IElementMap = {
       typeDocs: true,
     },
     {
-      id: "emails",
-      title: "Emails",
-      package: "email-bundle",
-      typeDocs: true,
-    },
-    {
-      id: "validator-bundle",
-      title: "Validation",
-      package: "validator-bundle",
-      typeDocs: true,
-    },
-    {
-      id: "logger",
-      title: "Logger",
-      package: "logger-bundle",
-      typeDocs: true,
-    },
-    {
-      id: "ejson",
-      title: "EJSON",
-      package: "ejson",
-      typeDocs: true,
-    },
-    {
       groupLabel: "Database",
       elements: [
         {
@@ -121,6 +97,30 @@ export const map: IElementMap = {
           typeDocs: true,
         },
       ],
+    },
+    {
+      id: "validator-bundle",
+      title: "Validation",
+      package: "validator-bundle",
+      typeDocs: true,
+    },
+    {
+      id: "logger",
+      title: "Logger",
+      package: "logger-bundle",
+      typeDocs: true,
+    },
+    {
+      id: "ejson",
+      title: "EJSON",
+      package: "ejson",
+      typeDocs: true,
+    },
+    {
+      id: "emails",
+      title: "Emails",
+      package: "email-bundle",
+      typeDocs: true,
     },
     {
       id: "terminal",

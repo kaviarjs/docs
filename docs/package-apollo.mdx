@@ -5,7 +5,7 @@ title: Apollo
 
 import { PackageHeader } from "@site/src/components/PackageHeader";
 
-<PackageHeader version="1.1.7" packageName="apollo-bundle" containsTypeDefs />
+<PackageHeader version="1.2.0" packageName="apollo-bundle" containsTypeDefs />
 
 ApolloBundle quickly bootstraps an Apollo Server within Kaviar's framework. It injects the `container` inside the context and allows you to easily create server-side routes.
 
@@ -37,6 +37,12 @@ kernel.addBundle(
         urlencoded: true,
       },
     ],
+
+    // Use uploads: false if you want to disable support for file uploading via graphql-upload
+    uploads: {
+      maxFileSize: 1024 * 1024 * 1000, // 1000 mega bytes, default is 10e9
+      maxFiles: 10, // how many files can a user upload at once?
+    },
   })
 );
 ```
