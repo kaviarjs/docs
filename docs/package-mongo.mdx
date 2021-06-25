@@ -173,6 +173,29 @@ postsCollection.query({
 });
 ```
 
+Keep in mind that links are attached on `.collection` under the `Collection` class from `@kaviar/mongo-bundle`, so if you want to use the methods of `query()` or `lookup()` from Nova:
+
+```ts
+import { lookup, query } from "@kaviar/nova";
+
+const postsCollection = container.get(PostsCollection);
+const results = query(
+  postsCollection.collection,
+  {
+    $: {
+      pipeline: [
+        lookup(postsCollection.collection, "user"),
+        // Note that we use .collection, because that's where links are attached.
+      ],
+    },
+  },
+  {
+    // And if you have container aware reducers you have to pass the context here:
+    container,
+  }
+);
+```
+
 ### GraphQL
 
 If you are looking to write a [Nova Query](https://www.kaviarjs.com/docs/package-nova#graphql-integration) in your GraphQL resolvers you can do:
