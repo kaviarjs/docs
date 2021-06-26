@@ -5,7 +5,7 @@ title: Nova
 
 import { PackageHeader } from "@site/src/components/PackageHeader";
 
-<PackageHeader version="1.5.1" packageName="nova" containsTypeDefs />
+<PackageHeader version="1.6.2" packageName="nova" containsTypeDefs />
 
 Nova is the fetching layer on top of MongoDB Node Driver, which allows SQL-comparable speeds for retrieving relational data.
 
@@ -214,6 +214,59 @@ Notes:
 - You can go as deeply as you want with your queries
 - Field storage can be stored in a nested field. Specify `field: "profile.medicalProfileId"`
 - Indexes are automatically set. If you want custom indexes use `index: false` when defining the direct link.
+
+## Filtered Links
+
+If you want to get the links and apply certain filters on it you could do it by specifying `filters` when defining the link:
+
+```ts
+addLinks(Companies, {
+  employees: {
+    collection: () => Users,
+    inversedBy: "company",
+    filters: {
+      roles: { $in: ["EMPLOYEE"] },
+    },
+  },
+  managgers: {
+    collection: () => Users,
+    inversedBy: "company",
+    filters: {
+      roles: { $in: ["MANAGER"] },
+    },
+  },
+});
+
+addLinks(Users, {
+  company: {
+    collection: () => Companies,
+    field: "companyId",
+  },
+});
+```
+
+Now when you query by employees, you are guaranteed you will get all users which have the filters you specified in your query (if any) AND the filters specified in the link.
+
+The `filters` can also be a function that accepts currently set filters to it:
+
+```ts
+addLinks(Users, {
+  // Don't get comments approved unless specified
+  comments: {
+    filters(options) {
+      // the options.filters are the current filters by which this node is requested with
+      // Sample code: if you haven't added some default filters already, apply this one
+      if (options.filters.isApproved === undefined) {
+        return {
+          isApproved: true,
+        };
+      } else {
+        return {};
+      }
+    },
+  },
+});
+```
 
 ## Query-ing
 

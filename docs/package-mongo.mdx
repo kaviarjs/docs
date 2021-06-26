@@ -5,7 +5,7 @@ title: MongoDB
 
 import { PackageHeader } from "@site/src/components/PackageHeader";
 
-<PackageHeader version="1.2.3" packageName="mongo-bundle" containsTypeDefs />
+<PackageHeader version="1.3.0" packageName="mongo-bundle" containsTypeDefs />
 
 The MongoBundle offers integration with MongoDB database by allowing you to hook into events, giving ability to work with model classes and add behaviors (such as timestampable, blameable). As well it is integrated with `@kaviar/nova` package which allows extremely rapid queries for relational data.
 
@@ -223,6 +223,52 @@ If you want the query to return a single element, a short-hand function is `post
 
 The nature of the behavior is simple, it is a `function` that receives the `collection` object when the collection initialises. And you can listen to events on the collection and make it **behave**.
 
+Let's create a behavior that logs the insertions of a document:
+
+```ts
+function logInsertions(collection) {
+  // You container access via collection.container if you need custom services, etc.
+  collection.on(BeforeInsertEvent, (e: BeforeInsertEvent) => {
+    // This listener is local only, it only applies to this collection
+    const service = collection.container.get(DocumentLoggerService);
+    service.log(e.data.document);
+  });
+}
+```
+
+```ts
+class GovernmentFilesCollection extends Collection {
+  static behaviors = [logInsertions];
+}
+```
+
+If for example, your behavior can get configurable based on some options then the approach would be like this:
+
+```ts
+function logInsertions(options) {
+  return (collection) => {
+    // do your thing here based on options
+    // options.name
+  };
+}
+```
+
+```ts
+class GovernmentFilesCollection extends Collection {
+  static behaviors = [
+    logInsertions({
+      name: "government",
+    }),
+  ];
+}
+```
+
+So ultimately, the behavior array is an array of functions.
+
+### Timestampable
+
+This would enter `createdAt`, `updatedAt`. You can also customise how the fields are named.
+
 ```typescript
 import { Behaviors, Collection } from "@kaviar/nova";
 
@@ -236,35 +282,33 @@ class UsersCollection extends Collection {
         updatedAt: "updatedAt",
       },
     }),
+  ];
+}
+```
+
+### Blameable
+
+The blameable behavior stores who created or updated the document by reading `userId` from the context passed. `context` is a special option we allow in all mutations (insert/update/delete) that is designed to work well with behaviors or other event listeners.
+
+```ts
+class UsersCollection extends Collection {
+  static behaviors = [
     Behaviors.Blameable({
       // optional config
       fields: {
         createdBy: "createdBy",
         updatedBy: "updatedBy",
       },
-      userIdFieldFromContext: "userId",
-    }),
-    Behaviors.Softdeletable({
-      // optional config
-      fields: {
-        isDeleted: "isDeleted",
-        deletedAt: "deletedAt",
-        deletedBy: "deletedBy",
-      },
-    }),
-    // The validate behavior works with transactions and ensures the full document is correct
-    Behaviors.Validate({
-      // optional config
-      model: User,
-      options: {}, // validate options
+      // If this is true, you always have to provide a { userId } in the context, may it be null
+      // userId is typically null when the system does the operation (like in a cronjob)
+      throwErrorWhenMissing: true,
     }),
   ];
 }
 ```
 
-Now, you may have behaviors that require you to provide a context to the operations. Not doing so, they will be allowed to throw exceptions and block your execution. For example if you have blameable behavior, and you do not have a context with `userId` being either `null` either a value, an exception will be thrown.
-
-```typescript
+```ts
+const usersCollection = container.get(UsersCollection);
 await usersCollection.insertOne(
   {
     firstName: "John",
@@ -278,48 +322,103 @@ await usersCollection.insertOne(
 );
 ```
 
-If you need to access the container, for example, you want to log the events into an external service you can access the container via `collection.container`.
+## Validate
 
-### Creating Behaviors
+This behavior leverages the `ValidateBundle`. We use it when we want to ensure that what we insert is valid, so it performs validation against the model on insert, and upon update it does the following inside a transaction:
 
-The `behavior` is a function that take in the collection's instance and performs manipulation on it, b
-y either hooking to events or overriding/extending its methods.
+1. Applies the mutation
+2. Gets the full document
+3. Performs validation
 
-Each collection has it's own event manager in which it dispatches events. When adding behaviors it would be great to use the `localEventManager`.
+In case of exception the transaction throws and is canceled. This might not be indicated to be applied on collections that get frequent updates, however this is a very secure way of ensuring data consistency because update operations might have unpredictable impact, for example, let's say we have a validation where a number must be under 100, but then we have an update modifier that does `{$inc: 1}`. We cannot know the impact this may have, hence this solution.
 
 ```ts
-const DeadSimpleTimestampable = () => {
-  return (collection: Collection) => {
-    collection.localEventManager.addListener(
-      // These are the standard events that also get into the global event manager
-      BeforeInsertEvent,
-      (e: BeforeInsertEvent) => {
-        const document = e.data.document;
-        const now = new Date();
+class UsersCollection extends Collection {
+  static behaviors = [
+    Behaviors.Validate({
+      model: User, // This is the standard @Schema() described model
+      // These are the options from ValidateBundle
+      // options?: ValidateOptions;
+      // cast?: boolean;
+      // castOptions?: any;
+    }),
+  ];
+}
+```
 
-        Object.assign(document, {
-          createdAt: now,
-        });
-      }
-    );
+## Softdeletable
+
+This behavior is used when you want to delete documents, but still keep them in the database for future reference. So imagine the situation where you have a lot of tasks, and when you delete a user, instead of deleting it you flag it as `isDeleted`, so when other people view the task they might also see who the user was, but when you are searching for users, that user should no longer appear.
+
+```ts
+class UsersCollection extends Collection {
+  static behaviors = [
+    Behaviors.Softdeletable({
+      fields: {
+        isDeleted: "isDeleted",
+        deletedAt: "deletedAt",
+        deletedBy: "deletedBy", // if userId is passed in the context it will be stored
+      },
+    }),
+  ];
+}
+```
+
+```ts
+const usersCollection = container.get(UsersCollection);
+
+// You can use deleteOne() or deleteMany()
+await usersCollection.deleteOne(
+  { _id: userIdToDelete },
+  {
+    context: {
+      userId: byUserId,
+    },
+  }
+);
+
+const user = await usersCollection.findOne({ _id: userId }); // null
+const user = await usersCollection.find({ _id: userId }).toArray(); // []
+// This is the same for query, queryOne, queryGraphQL, queryGraphQLOne
+
+// Updating won't work still.
+await usersCollection.updateOne(
+  { _id: userId },
+  {
+    $set: {},
+  }
+);
+
+// If you do want to find, update the user, specify inside the filters { isDeleted: true }
+const user = await usersCollection.findOne({ _id: userId, isDeleted: true }); // will return the user object
+```
+
+We automatically apply an index on `isDeleted` so you do not have to worry about performance.
+
+If you are using `Softdeletable` behavior, and you are also using `Nova` links, ensure to add the filters `{ isDeleted: { $ne: true } }` to the links pointing towards the soft deletable collection, otherwise, when fetching with `Nova` those will be returned. Sometimes you do want them to be returned because of consistency, it very much depends on your usecase:
+
+```ts
+class UsersCollection extends Collection {
+  static links = {
+    comments: {
+      collection: () => CommentsCollection,
+      filters: {
+        isDeleted: { $ne: true },
+      },
+    },
   };
-};
-
-class MyCollection extends Collection {
-  static behaviors = [DeadSimpleTimestampable()];
 }
 ```
 
 ## Models
 
-If we need to have logicfull models then it's easy. We are leveraging the power of `class-transformer` to do exactly that.
+If we need to have logicful models then it's easy.
 
 ```typescript
-import { ObjectID } from "mongodb";
-import { Collection } from "@kaviar/mongo-bundle";
+import { Collection, ObjectId } from "@kaviar/mongo-bundle";
 
 class User {
-  _id: ObjectID;
+  _id: ObjectId;
   firstName: string;
   lastName: string;
 
@@ -336,6 +435,7 @@ class UsersCollection extends Collection<User> {
 ```
 
 ```typescript
+// This will work with any finding queries
 const user = usersCollection.queryOne({
   firstName: 1,
   lastName: 1,
@@ -352,6 +452,7 @@ Now, if you want to query only for fullName, because that's what you care about,
 class UsersCollection extends Collection<User> {
   static collectionName = "users";
   static model = User;
+
   static expanders = {
     fullName: {
       firstName: 1,
@@ -373,7 +474,7 @@ user.lastName; // will exist
 user.fullName; // will automatically map it
 ```
 
-However, you can also leverage Nova to do this computing for you like this:
+However, you can also leverage Nova to do this computing via `reducers` for you like this:
 
 ```typescript
 class User {
@@ -386,6 +487,7 @@ class User {
 class UsersCollection extends Collection<User> {
   static collectionName = "users";
   static model = User;
+
   static reducers = {
     fullName: {
       dependency: {
@@ -410,35 +512,6 @@ user instanceof User;
 user.firstName; // will NOT exist
 user.lastName; // will NOT exist
 user.fullName; // will be what you requested
-```
-
-If you want to have nested models that reference other collections, it's easy:
-
-```typescript
-import { Type } from "@kaviar/mongo-bundle";
-
-class User {
-  _id: ObjectID;
-  name: string;
-}
-
-class Comment {
-  _id: ObjectID;
-  title: string;
-}
-```
-
-Now doing the query:
-
-```typescript
-const user = usersCollection.queryOne({
-  name: 1,
-  comments: {
-    title: 1,
-  },
-});
-
-// user.comments will be an Array of Comment objects
 ```
 
 ## Transactions
