@@ -322,7 +322,7 @@ await usersCollection.insertOne(
 );
 ```
 
-## Validate
+### Validate
 
 This behavior leverages the `ValidateBundle`. We use it when we want to ensure that what we insert is valid, so it performs validation against the model on insert, and upon update it does the following inside a transaction:
 
@@ -346,7 +346,7 @@ class UsersCollection extends Collection {
 }
 ```
 
-## Softdeletable
+### Softdeletable
 
 This behavior is used when you want to delete documents, but still keep them in the database for future reference. So imagine the situation where you have a lot of tasks, and when you delete a user, instead of deleting it you flag it as `isDeleted`, so when other people view the task they might also see who the user was, but when you are searching for users, that user should no longer appear.
 
