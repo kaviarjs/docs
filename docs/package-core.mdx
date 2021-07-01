@@ -5,7 +5,7 @@ title: Core
 
 import { PackageHeader } from "@site/src/components/PackageHeader";
 
-<PackageHeader version="1.2.1" packageName="core" containsTypeDefs />
+<PackageHeader version="1.2.2" packageName="core" containsTypeDefs />
 
 A powerful and lightweight module composition strategy responsible for orchestrating your logic, enabling you to easily respect SOLID principles within your infinitely scalable app.
 
@@ -81,10 +81,7 @@ class MyDatabaseService {
 }
 
 // You can get the container from `kernel.container`
-container.set({
-  id: "database_service",
-  type: MyDatabaseService,
-});
+container.set("database_service", MyDatabaseService);
 
 // Note that it will instantiate the class you have set
 const databaseService = container.get("database_service");
@@ -174,6 +171,69 @@ class A {
     // Both solutions work well (property injection/constructor injection)
     // Just do what you feel is easier
   }
+}
+```
+
+## Kernel Parameters
+
+You can also specify a list of parameters to the kernel. When the bundles within your app need the same information, you should use this instead of passing it as a config to each bundle.
+
+```js
+new Kernel({
+  parameters: {
+    // Just some examples, they can be anything
+    applicationUrl: "https://www.google.com/",
+    debug: true,
+  },
+});
+
+// Fetching them is getting the string wrapped in %%
+const applicationUrl = container.get("%applicationUrl%");
+
+// Or you can get them via kernel.parameters
+```
+
+You can inject parameters from kernel, or others like this:
+
+```typescript
+@Service()
+class A {
+  // Inject via property, Note: it uses a function
+  @Inject(() => "%debug%")
+  protected isDebug: boolean;
+
+  // Inject via constructor
+  constructor(@Inject("%applicationUrl%") applicationUrl: string) {
+    // Do something based on the context
+  }
+}
+```
+
+To benefit of autocompletion for your kernel parameters:
+
+```ts title="defs.ts"
+import "@kaviar/core";
+
+declare module "@kaviar/core" {
+  export interface IKernelParameters {
+    applicationUrl: string;
+  }
+}
+```
+
+By default the available parameters are:
+
+```ts
+export interface IKernelParameters {
+  debug: boolean; // Whether you are using in debug mode
+  testing: boolean; // Whether you are using the kernel to run tests
+  context: KernelContext;
+}
+
+export enum KernelContext {
+  DEVELOPMENT = "development",
+  PRE_PRODUCTION = "pre-production",
+  PRODUCTION = "production",
 }
 ```
 
@@ -471,69 +531,6 @@ try {
     // Do something
     // You can access: e.message to see the compiled message + optionally prefixed with the code
   }
-}
-```
-
-## Kernel Parameters
-
-You can also specify a list of parameters to the kernel. When the bundles within your app need the same information, you should use this instead of passing it as a config to each bundle.
-
-```js
-new Kernel({
-  parameters: {
-    // Just some examples, they can be anything
-    applicationUrl: "https://www.google.com/",
-    debug: true,
-  },
-});
-
-// Fetching them is getting the string wrapped in %%
-const applicationUrl = container.get("%applicationUrl%");
-
-// Or you can get them via kernel.parameters
-```
-
-You can inject parameters from kernel, or others like this:
-
-```typescript
-@Service()
-class A {
-  // Inject via property, Note: it uses a function
-  @Inject(() => "%debug%")
-  protected isDebug: boolean;
-
-  // Inject via constructor
-  constructor(@Inject("%applicationUrl%") applicationUrl: string) {
-    // Do something based on the context
-  }
-}
-```
-
-To benefit of autocompletion for your kernel parameters:
-
-```ts title="defs.ts"
-import "@kaviar/core";
-
-declare module "@kaviar/core" {
-  export interface IKernelParameters {
-    applicationUrl: string;
-  }
-}
-```
-
-By default the available parameters are:
-
-```ts
-export interface IKernelParameters {
-  debug: boolean; // Whether you are using in debug mode
-  testing: boolean; // Whether you are using the kernel to run tests
-  context: KernelContext;
-}
-
-export enum KernelContext {
-  DEVELOPMENT = "development",
-  PRE_PRODUCTION = "pre-production",
-  PRODUCTION = "production",
 }
 ```
 
