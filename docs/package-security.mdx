@@ -5,7 +5,7 @@ title: Security
 
 import { PackageHeader } from "@site/src/components/PackageHeader";
 
-<PackageHeader version="1.1.1" packageName="security-bundle" containsTypeDefs />
+<PackageHeader version="1.2.0" packageName="security-bundle" containsTypeDefs />
 
 This bundle aims to solve Authentication and Authorization (with included Permission Management & Permissioning Tree Hierarchy) while being fully decoupled from a persistence layer (Database), meaning you can implement your own persistence layers to work with any type of database/API.
 
@@ -297,7 +297,7 @@ You may find it cumbersome that you have to specify this "domain" everytime. We 
 
 If you only work with app-level bound permissions, you can easily create your own service that defaults it for you.
 
-## Permission Dimensions
+### Dimensions
 
 The `domains` help us give rights differently to different sections of the app:
 
@@ -400,6 +400,34 @@ If you specify an array then it'll find all the elements matching that array:
 }
 // Will return all permissions belonging to user1Id and user2Id
 // The others aren't specified so they can be anything
+```
+
+### Roles
+
+We call "role" a permission which is on `app` domain and has no `domainIdentifier`. The roles are typically stored under an array of strings under `user: { roles: [] }` but it can also be stored under permission collection as they normally are. It's your choice, the system works with both options, but for consistency it's best to just stick to one that fits best.
+
+```ts
+import { SecurityService } from "@kaviar/security-bundle";
+
+const securityService = container.get(SecurityService);
+const roles = await securityService.getRoles(userId);
+await securityService.setRoles(userId, ["ROLE1", "ROLE2"]);
+```
+
+Roles works with hierarchy seamlessly. To check if the user has a role and also be `hierarchy` aware:
+
+```ts
+const permissionService = container.get(PermissionService);
+
+// Because the domain is "app", and no identifier. This will also check under `user.roles` to see if matches
+const hasRole = permissionService.hasRole(userId, "ROLE1"); // works with array of strings too
+
+// ^ Is a placeholder for the below code:
+const hasRole = permissionService.has({
+  userId,
+  permission: "ROLE1",
+  domain: "app",
+});
 ```
 
 ## Events
