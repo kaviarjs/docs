@@ -604,7 +604,7 @@ When using live data and relations, it is by design to not have reactivity at ne
 
 ## Integration with Smart
 
-Smart is a very small library that does state management by using `useState()` from React and `useContext()` allowing you to easily split logic out of your components.
+Smart is a very small library which allowes you to integrate logic and state together in a separated class.
 
 The difference here is that `Smart` from this package, allows you to work with the D.I. container:
 
@@ -859,18 +859,19 @@ since onSetRemove identifies a handler by comparing functions, which is done on 
 When initialising `XUIBundle()`, you can pass session defaults:
 
 ```ts title="kernel.ts";
-  export const kernel = new Kernel({
-    ...,
-    bundles: [
-      ...,
-      new XUIBundle({
-        session: {
+export const kernel = new Kernel({
+  bundles: [
+    // other bundles
+    new XUIBundle({
+      session: {
+        defaults: {
           csrfToken: null,
-          localStorageKey: "SESSION_LOCAL_STORAGE_KEY"
-        }
-      })
-    ]
-  })
+        },
+        localStorageKey: "SESSION_LOCAL_STORAGE_KEY",
+      },
+    }),
+  ],
+});
 ```
 
 ## UI Components
