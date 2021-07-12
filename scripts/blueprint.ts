@@ -99,6 +99,18 @@ export const map: IElementMap = {
       ],
     },
     {
+      id: "queue",
+      title: "Message Queues",
+      package: "rabbitmq-bundle",
+      typeDocs: true,
+    },
+    {
+      id: "http-server",
+      title: "HTTP Server",
+      package: "http-bundle",
+      typeDocs: true,
+    },
+    {
       id: "validator-bundle",
       title: "Validation",
       package: "validator-bundle",

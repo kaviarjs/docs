@@ -32,6 +32,8 @@ module.exports = {
                 "package-apollo-security"
             ]
         },
+        "package-queue",
+        "package-http-server",
         "package-validator-bundle",
         "package-logger",
         "package-ejson",
