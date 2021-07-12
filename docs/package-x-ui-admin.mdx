@@ -5,7 +5,7 @@ title: Administration
 
 import { PackageHeader } from "@site/src/components/PackageHeader";
 
-<PackageHeader version="1.1.4" packageName="x-ui-admin"  />
+<PackageHeader version="1.2.0" packageName="x-ui-admin"  />
 
 This is the place where you configure your enterprise level applications Administration interface. This bundle makes use of `@kaviar/x-ui`, so it is best if you familiarise yourself with it first.
 
@@ -44,15 +44,14 @@ Now we need to create a route, and because we don't rely on strings for routing,
 import { IRoute } from "@kaviar/x-ui";
 
 export const DASHBOARD = {
-  label: "", // By default it's "Dashboard" (capitalise each word, and removes _)
   path: "/dashboard",
   component: Dashboard,
-  // optionally require certain roles
+  // optionally require certain roles that you can define in a Roles enum
   roles: [Roles.ADMIN],
   menu: {
-    icon: "RightOutlined", // Use any from: https://ant.design/components/icon/
-    path: "Administration.Users",
-    // If there is already an "Administration" path, it will get extended
+    icon: RightOutlined, // Use any from: https://ant.design/components/icon/
+    key: "DASHBOARD", // a unique name
+    label: "Dashboard",
     order: 0, // If you want it to hold priority. The menus will be sorted by order, otherwise, by the order they have been added into the menu
   },
 };
