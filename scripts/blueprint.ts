@@ -50,6 +50,12 @@ export const map: IElementMap = {
           package: "nova",
           typeDocs: true,
         },
+        {
+          id: "sql",
+          title: "SQL",
+          package: "mikro-orm-bundle",
+          typeDocs: true,
+        },
       ],
     },
     {
