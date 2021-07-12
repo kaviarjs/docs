@@ -5,7 +5,7 @@ title: HTTP Server
 
 import { PackageHeader } from "@site/src/components/PackageHeader";
 
-<PackageHeader version="1.0.0" packageName="http-bundle" containsTypeDefs />
+<PackageHeader version="1.1.0" packageName="http-bundle" containsTypeDefs />
 
 This is a bundle that integrates nicely with [express](http://expressjs.com/en/api.html#express) within the framework.
 
@@ -67,6 +67,27 @@ export const routes: RouteType[] = [
     async handler(container, req, res, next) {
       // do your thing
     },
+  },
+];
+```
+
+Handlers can be chainable:
+
+```ts
+async function CheckLoggedIn(container, req, res, next) {
+  // throw exception if not ok
+}
+
+export const routes: RouteType[] = [
+  {
+    type: "get",
+    path: "/users",
+    handler: [
+      CheckLoggedIn(),
+      (container, req, res, next) => {
+        // something else
+      },
+    ],
   },
 ];
 ```
