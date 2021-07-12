@@ -53,7 +53,7 @@ export const map: IElementMap = {
         {
           id: "sql",
           title: "SQL",
-          package: "mikro-orm-bundle",
+          package: "mikroorm-bundle",
           typeDocs: true,
         },
       ],

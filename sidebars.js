@@ -11,7 +11,8 @@ module.exports = {
             "label": "Database",
             "items": [
                 "package-mongo",
-                "package-nova"
+                "package-nova",
+                "package-sql"
             ]
         },
         {
